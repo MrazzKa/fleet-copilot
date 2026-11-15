@@ -1,0 +1,25 @@
+# One command:  docker compose up --build
+# Host networking lets the app reach AgOpenWeb on 127.0.0.1:5174 and keeps the
+# "local = presenter, tunnel = judge" rule working. Works on Linux / WSL2 Docker Engine.
+services:
+  fleet:
+    build: .
+    network_mode: host
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      FLEET_AGOPENWEB: ${FLEET_AGOPENWEB:-ws://127.0.0.1:5174/ws}
+    volumes:
+      - ./memory:/app/memory
+    restart: unless-stopped
+
+  # Optional public link for judges' phones. Start with:
+  #   docker compose --profile public up
+  # then look for the https://....trycloudflare.com URL in the logs.
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    profiles: ["public"]
+    network_mode: host
+    command: tunnel --no-autoupdate --url http://127.0.0.1:8000
+    restart: unless-stopped

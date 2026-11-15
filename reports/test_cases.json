@@ -1,0 +1,638 @@
+[
+  {
+    "id": "night_breakdown",
+    "title": "3 AM breakdown \u2014 tractor B takes over",
+    "story": "Night shift. At 03:00 T3 Colt breaks down mid-mowing a HIGH-priority field. Agents must hand the rest to another tractor (via the spare mower at the depot) with no human.",
+    "passed": true,
+    "checks": [
+      {
+        "check": "0 invariant violations (no lost/duplicated work, fuel, routes, implements, wind)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "handled with 0 human interventions",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "J9 finished by a tractor other than T3",
+        "ok": true,
+        "detail": "done by T2 at 07:13"
+      },
+      {
+        "check": "J9 partial progress kept \u2014 total worked area equals recorded area (no rework)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "safe re-plan dispatched in < 100 ms",
+        "ok": true,
+        "detail": "10.8 ms"
+      }
+    ],
+    "agents": {
+      "incidents": 3,
+      "reflex": 3,
+      "learned": 0,
+      "deliberations": 3,
+      "avg_safe_ms": 17.843062333345944,
+      "msgs_per_incident": 7.666666666666667,
+      "tool_calls": 22,
+      "llm_calls": 0,
+      "llm": "none (rules)"
+    },
+    "copilot": {
+      "done": 10,
+      "on_time": 6,
+      "weighted_on_time": 12,
+      "violations": 0
+    },
+    "fcfs": {
+      "done": 8,
+      "on_time": 4,
+      "weighted_on_time": 5
+    },
+    "seconds": 0.33,
+    "events": [
+      [
+        "03:00",
+        {
+          "kind": "breakdown",
+          "tractor": "T3"
+        }
+      ]
+    ]
+  },
+  {
+    "id": "sprayer_breakdown",
+    "title": "Only sprayer tractor breaks mid-spray",
+    "story": "07:40: T2 Bison (the sprayer) breaks at 47% of a HIGH-priority spray. Remaining hectares must move to another tractor and still meet the 10:30 deadline.",
+    "passed": true,
+    "checks": [
+      {
+        "check": "0 invariant violations (no lost/duplicated work, fuel, routes, implements, wind)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "handled with 0 human interventions",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "J5 finished by a tractor other than T2",
+        "ok": true,
+        "detail": "done by T1 at 09:48"
+      },
+      {
+        "check": "J5 on time (due 10:30)",
+        "ok": true,
+        "detail": "finished 09:48"
+      },
+      {
+        "check": "J5 partial progress kept \u2014 total worked area equals recorded area (no rework)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "safe re-plan dispatched in < 100 ms",
+        "ok": true,
+        "detail": "11.0 ms"
+      }
+    ],
+    "agents": {
+      "incidents": 2,
+      "reflex": 2,
+      "learned": 0,
+      "deliberations": 2,
+      "avg_safe_ms": 16.678413500002875,
+      "msgs_per_incident": 10.5,
+      "tool_calls": 16,
+      "llm_calls": 0,
+      "llm": "none (rules)"
+    },
+    "copilot": {
+      "done": 10,
+      "on_time": 6,
+      "weighted_on_time": 14,
+      "violations": 0
+    },
+    "fcfs": {
+      "done": 8,
+      "on_time": 4,
+      "weighted_on_time": 5
+    },
+    "seconds": 0.25,
+    "events": [
+      [
+        "07:40",
+        {
+          "kind": "breakdown",
+          "tractor": "T2"
+        }
+      ]
+    ]
+  },
+  {
+    "id": "bridge_closure",
+    "title": "Bridge closes under moving tractors",
+    "story": "06:20: North Bridge closes while tractors are driving east. Navigation must re-path everyone; nobody may cross the closed bridge.",
+    "passed": true,
+    "checks": [
+      {
+        "check": "0 invariant violations (no lost/duplicated work, fuel, routes, implements, wind)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "planner \u2192 navigation message exchanged",
+        "ok": true,
+        "detail": "1 message(s)"
+      },
+      {
+        "check": "navigation \u2192 planner message exchanged",
+        "ok": true,
+        "detail": "1 message(s)"
+      },
+      {
+        "check": "all jobs completed by end of day",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "agents": {
+      "incidents": 2,
+      "reflex": 2,
+      "learned": 0,
+      "deliberations": 2,
+      "avg_safe_ms": 21.434887500006994,
+      "msgs_per_incident": 10.5,
+      "tool_calls": 17,
+      "llm_calls": 0,
+      "llm": "none (rules)"
+    },
+    "copilot": {
+      "done": 10,
+      "on_time": 10,
+      "weighted_on_time": 20,
+      "violations": 0
+    },
+    "fcfs": {
+      "done": 10,
+      "on_time": 8,
+      "weighted_on_time": 14
+    },
+    "seconds": 0.25,
+    "events": [
+      [
+        "06:20",
+        {
+          "kind": "block",
+          "target": "north_bridge"
+        }
+      ]
+    ]
+  },
+  {
+    "id": "wind_gust",
+    "title": "Wind gust during spraying",
+    "story": "07:30: forecast jumps to 14 mph for 2 h (drift risk). Spraying must stop immediately, progress kept, and resume only in a safe window.",
+    "passed": true,
+    "checks": [
+      {
+        "check": "0 invariant violations (no lost/duplicated work, fuel, routes, implements, wind)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "no spraying minute outside the safe wind window",
+        "ok": true,
+        "detail": "0 unsafe minutes"
+      },
+      {
+        "check": "all jobs completed by end of day",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "agents": {
+      "incidents": 2,
+      "reflex": 2,
+      "learned": 0,
+      "deliberations": 2,
+      "avg_safe_ms": 19.7425810000027,
+      "msgs_per_incident": 11.0,
+      "tool_calls": 16,
+      "llm_calls": 0,
+      "llm": "none (rules)"
+    },
+    "copilot": {
+      "done": 10,
+      "on_time": 9,
+      "weighted_on_time": 18,
+      "violations": 0
+    },
+    "fcfs": {
+      "done": 10,
+      "on_time": 6,
+      "weighted_on_time": 9
+    },
+    "seconds": 0.26,
+    "events": [
+      [
+        "07:30",
+        {
+          "kind": "wind",
+          "mph": 14,
+          "hours": 2
+        }
+      ]
+    ]
+  },
+  {
+    "id": "operator_rush",
+    "title": "Operator rushes a job in plain English",
+    "story": "08:00: the operator types \u201cField 6 is urgent, we need it by 10:30\u201d. The Liaison agent must understand it and the plan must move F6 earlier.",
+    "passed": true,
+    "checks": [
+      {
+        "check": "0 invariant violations (no lost/duplicated work, fuel, routes, implements, wind)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "Liaison understood the operator: J7 priority = high",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "J7 finished earlier than without the operator message",
+        "ok": true,
+        "detail": "10:10 vs 11:02"
+      }
+    ],
+    "agents": {
+      "incidents": 3,
+      "reflex": 3,
+      "learned": 0,
+      "deliberations": 3,
+      "avg_safe_ms": 18.01918600000363,
+      "msgs_per_incident": 8.333333333333334,
+      "tool_calls": 23,
+      "llm_calls": 0,
+      "llm": "none (rules)"
+    },
+    "copilot": {
+      "done": 10,
+      "on_time": 10,
+      "weighted_on_time": 21,
+      "violations": 0
+    },
+    "fcfs": {
+      "done": 10,
+      "on_time": 8,
+      "weighted_on_time": 14
+    },
+    "seconds": 0.26,
+    "events": [
+      [
+        "08:00",
+        {
+          "say": "Field 6 is urgent, we need it by 10:30"
+        }
+      ]
+    ]
+  },
+  {
+    "id": "double_fault",
+    "title": "Two tractors fail within 90 minutes",
+    "story": "T2 breaks at 07:40, T3 at 09:10. One tractor left \u2014 agents must triage by priority and still beat the baseline.",
+    "passed": true,
+    "checks": [
+      {
+        "check": "0 invariant violations (no lost/duplicated work, fuel, routes, implements, wind)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "handled with 0 human interventions",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "priority-weighted on-time work \u2265 FCFS baseline",
+        "ok": true,
+        "detail": "11 vs 4"
+      }
+    ],
+    "agents": {
+      "incidents": 4,
+      "reflex": 3,
+      "learned": 1,
+      "deliberations": 2,
+      "avg_safe_ms": 8.903144500010285,
+      "msgs_per_incident": 7.25,
+      "tool_calls": 20,
+      "llm_calls": 0,
+      "llm": "none (rules)"
+    },
+    "copilot": {
+      "done": 6,
+      "on_time": 4,
+      "weighted_on_time": 11,
+      "violations": 0
+    },
+    "fcfs": {
+      "done": 5,
+      "on_time": 3,
+      "weighted_on_time": 4
+    },
+    "seconds": 0.26,
+    "events": [
+      [
+        "07:40",
+        {
+          "kind": "breakdown",
+          "tractor": "T2"
+        }
+      ],
+      [
+        "09:10",
+        {
+          "kind": "breakdown",
+          "tractor": "T3"
+        }
+      ]
+    ]
+  },
+  {
+    "id": "learned_reflex",
+    "title": "Same fault twice \u2192 learned reflex",
+    "story": "T2 breaks at 07:40, is repaired at 09:00 and breaks again at 11:00. The first time the Planner deliberates; the second time it must reuse the learned reflex from shared memory instantly.",
+    "passed": true,
+    "checks": [
+      {
+        "check": "0 invariant violations (no lost/duplicated work, fuel, routes, implements, wind)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "2nd identical fault solved by a learned reflex (no deliberation)",
+        "ok": true,
+        "detail": "1st: reflex + deliberation 30 ms; 2nd: learned 1.8 ms"
+      }
+    ],
+    "agents": {
+      "incidents": 4,
+      "reflex": 3,
+      "learned": 1,
+      "deliberations": 2,
+      "avg_safe_ms": 10.407606749993192,
+      "msgs_per_incident": 9.0,
+      "tool_calls": 22,
+      "llm_calls": 0,
+      "llm": "none (rules)"
+    },
+    "copilot": {
+      "done": 10,
+      "on_time": 8,
+      "weighted_on_time": 17,
+      "violations": 0
+    },
+    "fcfs": {
+      "done": 9,
+      "on_time": 4,
+      "weighted_on_time": 5
+    },
+    "seconds": 0.24,
+    "events": [
+      [
+        "07:40",
+        {
+          "kind": "breakdown",
+          "tractor": "T2"
+        }
+      ],
+      [
+        "09:00",
+        {
+          "kind": "repair",
+          "tractor": "T2"
+        }
+      ],
+      [
+        "11:00",
+        {
+          "kind": "breakdown",
+          "tractor": "T2"
+        }
+      ]
+    ]
+  },
+  {
+    "id": "flooded_field",
+    "title": "Flooded field closes and reopens",
+    "story": "09:00: F5 floods. Its job must be postponed (never worked while closed) and rescheduled when F5 reopens at 13:00.",
+    "passed": true,
+    "checks": [
+      {
+        "check": "0 invariant violations (no lost/duplicated work, fuel, routes, implements, wind)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "J2 done after the field reopened (13:00)",
+        "ok": true,
+        "detail": "started 13:18, done 15:40"
+      }
+    ],
+    "agents": {
+      "incidents": 5,
+      "reflex": 5,
+      "learned": 0,
+      "deliberations": 2,
+      "avg_safe_ms": 6.00939819999553,
+      "msgs_per_incident": 5.8,
+      "tool_calls": 21,
+      "llm_calls": 0,
+      "llm": "none (rules)"
+    },
+    "copilot": {
+      "done": 10,
+      "on_time": 10,
+      "weighted_on_time": 20,
+      "violations": 0
+    },
+    "fcfs": {
+      "done": 10,
+      "on_time": 8,
+      "weighted_on_time": 14
+    },
+    "seconds": 0.18,
+    "events": [
+      [
+        "09:00",
+        {
+          "kind": "close_field",
+          "field": "F5",
+          "why": "flooded"
+        }
+      ],
+      [
+        "13:00",
+        {
+          "kind": "open_field",
+          "field": "F5"
+        }
+      ]
+    ]
+  },
+  {
+    "id": "low_fuel",
+    "title": "Tractor starts nearly empty",
+    "story": "T2 starts at 18% fuel. A refuel stop must be planned automatically; it must never run dry.",
+    "passed": true,
+    "checks": [
+      {
+        "check": "0 invariant violations (no lost/duplicated work, fuel, routes, implements, wind)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "T2 refueled before running dry",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "all jobs completed by end of day",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "agents": {
+      "incidents": 1,
+      "reflex": 1,
+      "learned": 0,
+      "deliberations": 1,
+      "avg_safe_ms": 19.60010999999895,
+      "msgs_per_incident": 11.0,
+      "tool_calls": 8,
+      "llm_calls": 0,
+      "llm": "none (rules)"
+    },
+    "copilot": {
+      "done": 10,
+      "on_time": 10,
+      "weighted_on_time": 20,
+      "violations": 0
+    },
+    "fcfs": {
+      "done": 10,
+      "on_time": 8,
+      "weighted_on_time": 14
+    },
+    "seconds": 0.18,
+    "events": []
+  },
+  {
+    "id": "chaos_burst",
+    "title": "Chaos burst on a random farm",
+    "story": "Random farm, 6+ random faults (breakdowns, closures, wind, rush jobs, closed fields). Every incident must be handled with zero violations.",
+    "passed": true,
+    "checks": [
+      {
+        "check": "0 invariant violations (no lost/duplicated work, fuel, routes, implements, wind)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "check": "every incident got a safe plan decision",
+        "ok": true,
+        "detail": "10 incidents"
+      },
+      {
+        "check": "communication efficiency: < 16 messages per incident",
+        "ok": true,
+        "detail": "6.6"
+      }
+    ],
+    "agents": {
+      "incidents": 10,
+      "reflex": 9,
+      "learned": 1,
+      "deliberations": 4,
+      "avg_safe_ms": 1.6152564000037728,
+      "msgs_per_incident": 6.6,
+      "tool_calls": 49,
+      "llm_calls": 0,
+      "llm": "none (rules)"
+    },
+    "copilot": {
+      "done": 2,
+      "on_time": 2,
+      "weighted_on_time": 5,
+      "violations": 0
+    },
+    "fcfs": {
+      "done": 2,
+      "on_time": 2,
+      "weighted_on_time": 5
+    },
+    "seconds": 0.1,
+    "events": [
+      [
+        "09:29",
+        {
+          "kind": "block",
+          "target": "south_bridge"
+        }
+      ],
+      [
+        "11:02",
+        {
+          "kind": "pin",
+          "job": "J1",
+          "tractor": "T2"
+        }
+      ],
+      [
+        "11:23",
+        {
+          "kind": "wind",
+          "mph": 16,
+          "hours": 2
+        }
+      ],
+      [
+        "12:29",
+        {
+          "kind": "wind",
+          "mph": 16,
+          "hours": 1
+        }
+      ],
+      [
+        "13:06",
+        {
+          "kind": "unblock",
+          "target": "north_bridge"
+        }
+      ],
+      [
+        "16:11",
+        {
+          "kind": "close_field",
+          "field": "F4"
+        }
+      ],
+      [
+        "16:37",
+        {
+          "kind": "unblock",
+          "target": "north_bridge"
+        }
+      ]
+    ]
+  }
+]

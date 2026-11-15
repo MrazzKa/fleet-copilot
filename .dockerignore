@@ -1,0 +1,8 @@
+.venv
+.git
+.env
+memory
+__pycache__
+*.pyc
+.pytest_cache
+reports/event_log_demo.*

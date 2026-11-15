@@ -1,0 +1,273 @@
+{
+  "name": "Santa Cruz Valley Farm, demo day",
+  "grid": {
+    "width": 24,
+    "height": 16,
+    "cell_km": 0.5
+  },
+  "day": {
+    "start": "06:00",
+    "end": "20:00"
+  },
+  "depot": {
+    "x": 7,
+    "y": 8,
+    "implements": {
+      "sprayer": 1,
+      "seeder": 1,
+      "mower": 0,
+      "tiller": 0
+    }
+  },
+  "river": {
+    "x": 12,
+    "bridges": [
+      {
+        "id": "north_bridge",
+        "name": "North Bridge",
+        "y": 3
+      },
+      {
+        "id": "south_bridge",
+        "name": "South Bridge",
+        "y": 12
+      }
+    ]
+  },
+  "weather": {
+    "note": "Hourly wind (mph) from 06:00. Spraying allowed only at 3-10 mph (below 3 = inversion risk, above 10 = drift).",
+    "wind_mph": [
+      2,
+      3,
+      5,
+      6,
+      7,
+      9,
+      11,
+      13,
+      12,
+      10,
+      8,
+      6,
+      5,
+      4,
+      3
+    ]
+  },
+  "fields": [
+    {
+      "id": "F1",
+      "name": "North Almonds",
+      "x": 1,
+      "y": 1,
+      "w": 4,
+      "h": 3,
+      "area_ha": 18
+    },
+    {
+      "id": "F2",
+      "name": "Creek Orchard",
+      "x": 6,
+      "y": 1,
+      "w": 4,
+      "h": 3,
+      "area_ha": 14
+    },
+    {
+      "id": "F3",
+      "name": "West Walnuts",
+      "x": 1,
+      "y": 11,
+      "w": 4,
+      "h": 4,
+      "area_ha": 20
+    },
+    {
+      "id": "F4",
+      "name": "Barn Field",
+      "x": 6,
+      "y": 12,
+      "w": 4,
+      "h": 3,
+      "area_ha": 16
+    },
+    {
+      "id": "F5",
+      "name": "Ridge Pistachio",
+      "x": 14,
+      "y": 1,
+      "w": 4,
+      "h": 3,
+      "area_ha": 16
+    },
+    {
+      "id": "F6",
+      "name": "East Peaches",
+      "x": 19,
+      "y": 1,
+      "w": 4,
+      "h": 4,
+      "area_ha": 20
+    },
+    {
+      "id": "F7",
+      "name": "Center Orchard",
+      "x": 14,
+      "y": 6,
+      "w": 4,
+      "h": 4,
+      "area_ha": 20
+    },
+    {
+      "id": "F8",
+      "name": "Pond Plums",
+      "x": 19,
+      "y": 7,
+      "w": 4,
+      "h": 3,
+      "area_ha": 12
+    },
+    {
+      "id": "F9",
+      "name": "South Cover Crop",
+      "x": 14,
+      "y": 12,
+      "w": 4,
+      "h": 3,
+      "area_ha": 16
+    },
+    {
+      "id": "F10",
+      "name": "Far East Rows",
+      "x": 19,
+      "y": 12,
+      "w": 4,
+      "h": 3,
+      "area_ha": 14
+    }
+  ],
+  "tractors": [
+    {
+      "id": "T1",
+      "name": "Atlas",
+      "model": "ATC 7R heavy",
+      "capabilities": [
+        "tiller",
+        "seeder",
+        "sprayer",
+        "mower"
+      ],
+      "implement": "tiller",
+      "fuel": 90,
+      "min_per_cell": 2.0,
+      "work_mult": 1.0,
+      "burn_work": 12,
+      "burn_travel": 5,
+      "hours_since_service": 40
+    },
+    {
+      "id": "T2",
+      "name": "Bison",
+      "model": "ATC 5M orchard",
+      "capabilities": [
+        "sprayer",
+        "mower"
+      ],
+      "implement": "sprayer",
+      "fuel": 70,
+      "min_per_cell": 1.8,
+      "work_mult": 1.0,
+      "burn_work": 11,
+      "burn_travel": 5,
+      "hours_since_service": 310
+    },
+    {
+      "id": "T3",
+      "name": "Colt",
+      "model": "ATC 3E compact",
+      "capabilities": [
+        "mower",
+        "sprayer"
+      ],
+      "implement": "mower",
+      "fuel": 100,
+      "min_per_cell": 1.6,
+      "work_mult": 0.85,
+      "burn_work": 10,
+      "burn_travel": 4,
+      "hours_since_service": 120
+    }
+  ],
+  "jobs": [
+    {
+      "id": "J1",
+      "type": "till",
+      "field": "F4",
+      "priority": "low",
+      "deadline": "19:00"
+    },
+    {
+      "id": "J2",
+      "type": "mow",
+      "field": "F5",
+      "priority": "low",
+      "deadline": "18:00"
+    },
+    {
+      "id": "J3",
+      "type": "spray",
+      "field": "F8",
+      "priority": "low",
+      "deadline": "17:00"
+    },
+    {
+      "id": "J4",
+      "type": "till",
+      "field": "F1",
+      "priority": "medium",
+      "deadline": "14:00"
+    },
+    {
+      "id": "J5",
+      "type": "spray",
+      "field": "F7",
+      "priority": "high",
+      "deadline": "10:30"
+    },
+    {
+      "id": "J6",
+      "type": "mow",
+      "field": "F9",
+      "priority": "medium",
+      "deadline": "13:00"
+    },
+    {
+      "id": "J7",
+      "type": "spray",
+      "field": "F6",
+      "priority": "medium",
+      "deadline": "16:00"
+    },
+    {
+      "id": "J8",
+      "type": "seed",
+      "field": "F2",
+      "priority": "medium",
+      "deadline": "17:00"
+    },
+    {
+      "id": "J9",
+      "type": "mow",
+      "field": "F10",
+      "priority": "high",
+      "deadline": "11:00"
+    },
+    {
+      "id": "J10",
+      "type": "spray",
+      "field": "F3",
+      "priority": "high",
+      "deadline": "12:30"
+    }
+  ]
+}

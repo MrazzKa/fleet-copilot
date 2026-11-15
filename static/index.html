@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fleet Copilot | agents that keep a tractor fleet working</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="brand"><span class="mark">🌾</span><div><b>Fleet&nbsp;Copilot</b><small id="scn">connecting…</small></div></div>
+  <div class="clockbox"><div id="clock">06:00</div><div class="dayprog"><i id="dayfill"></i></div></div>
+  <div class="ctrl">
+    <button id="play" class="primary">▶ Start day</button>
+    <div class="seg" id="speeds"><button data-s="0.5">½×</button><button data-s="1" class="on">1×</button><button data-s="3">3×</button><button data-s="10">10×</button></div>
+    <button id="skip" title="Skip 30 sim-minutes">⏭</button>
+    <button id="reset" title="Reset the day">⟲</button>
+  </div>
+  <div class="score" id="score"></div>
+  <div class="hright">
+    <span id="wind" class="pill"></span>
+    <span id="llm" class="pill clickable" title="Agent LLM chain, click to simulate 'no signal in the field' (fails over to local model / rules)"></span>
+    <button id="theme" class="icon" title="Switch theme: Field ↔ Night ops">◐</button>
+    <button id="tts" class="icon" title="Read plan changes aloud">🔈</button>
+    <button id="qrbtn" class="accent">📱 Judges</button>
+  </div>
+</header>
+
+<main>
+  <section class="left">
+    <div class="card mapcard">
+      <div class="cardhead"><div class="viewsw" id="viewsw"><button data-view="agow" class="on">AgOpenWeb (live GPS)</button><button data-view="farm">Farm map</button></div><div class="maplegend" id="farmlegend">
+        <span><i class="sw spray"></i>spray</span><span><i class="sw mow"></i>mow</span><span><i class="sw till"></i>till</span><span><i class="sw seed"></i>seed</span>
+        <label><input type="checkbox" id="showGhost" checked> FCFS ghost</label><label><input type="checkbox" id="showPaths" checked> routes</label></div></div>
+      <canvas id="map"></canvas>
+      <div id="agowview" class="agowview hidden">
+        <iframe id="agowframe" title="AgOpenWeb" referrerpolicy="no-referrer"></iframe>
+        <div class="agowfallback" id="agowfallback">AgOpenWeb is not connected. Start it (see README) or switch to <b>Farm map</b>.</div>
+        <a id="agowopen" class="agowopen" target="_blank">open in new tab</a>
+      </div>
+      <div id="thinking"></div>
+      <div id="agow" class="agow hidden">
+        <div class="agowhead"><b>🛰 GPS twin</b><span id="agowstat" class="pill"></span></div>
+        <canvas id="agowcv"></canvas>
+        <div id="agowinfo" class="agowinfo"></div>
+        <div class="agowbtns"><button data-ag="gps_fault" title="Really stop the vehicle inside AgOpenWeb, agents must notice from GPS">⚡ GPS fault</button><button data-ag="resume">▶ Resume</button><button data-ag="toggle_sim" title="sim.toggleEnable">Sim on/off</button><button data-ag="take_control">Take control</button></div>
+      </div>
+    </div>
+    <div class="card ganttcard">
+      <div class="bottomsw"><button data-bottom="story" class="on">Incident story</button><button data-bottom="gantt">Schedule</button><select id="storypick" title="Pick an incident"></select></div>
+      <div id="story" class="story"></div>
+      <canvas id="gantt" class="hidden"></canvas>
+    </div>
+  </section>
+
+  <section class="right">
+    <div class="card netcard">
+      <div class="cardhead"><h2>Agent network</h2><span class="sub">live messages · tool calls · memory</span></div>
+      <canvas id="net"></canvas>
+      <div id="orchm" class="orchm"></div>
+    </div>
+    <div class="card tabcard">
+      <nav class="tabs">
+        <button data-tab="feed" class="on">Conversation</button>
+        <button data-tab="plan">Plan &amp; why</button>
+        <button data-tab="jobs">Jobs</button>
+        <button data-tab="memory">Memory</button>
+        <button data-tab="tests">Test cases</button>
+        <button data-tab="log">Log</button>
+        <button data-tab="proof">Proof</button>
+      </nav>
+      <div class="tab on" id="tab-feed">
+        <div class="feedbar"><label><input type="checkbox" id="feedTools" checked> tool calls &amp; thoughts</label><span id="agentchips"></span></div>
+        <div id="feed"></div>
+      </div>
+      <div class="tab" id="tab-plan"><div id="answer"></div><div id="explain"></div><div id="resil"></div><div id="tractors"></div></div>
+      <div class="tab" id="tab-jobs"><table id="jobs"></table></div>
+      <div class="tab" id="tab-memory"><div id="memory">Loading…</div></div>
+      <div class="tab" id="tab-tests"><div id="tests">Loading…</div></div>
+      <div class="tab" id="tab-log">
+        <div class="logbar"><a href="/api/log.json" target="_blank">⬇ JSON</a><a href="/api/log.csv">⬇ CSV</a>
+          <button id="saveRun">💾 Save run to reports/</button><label><input type="checkbox" id="logAll"> routine entries</label></div>
+        <div id="log"></div>
+      </div>
+      <div class="tab" id="tab-proof"><div id="proof">Loading…</div></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <form id="cmd" autocomplete="off">
+    <button type="button" id="mic" title="Talk to the Operator Liaison agent (right-click: EN/RU)">🎤</button>
+    <input id="cmdtext" placeholder='Talk to the fleet… “Bison is making a noise and stopped” · “close the north bridge” · “why not T3 for J5”'>
+    <button class="primary">Send</button>
+  </form>
+  <div class="quick" id="quick"></div>
+  <div id="judgebar"><input id="judgeName" placeholder="Your name (shows in the log)" maxlength="20"></div>
+</footer>
+
+<div id="toasts"></div>
+<div id="modal" class="modal hidden"><div class="box"><button class="x" id="modalx">✕</button><div id="modalbody"></div></div></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

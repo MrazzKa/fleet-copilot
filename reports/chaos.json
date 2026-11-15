@@ -1,0 +1,15 @@
+{
+  "runs": 1000,
+  "seconds": 104.8,
+  "crashes": 0,
+  "copilot_violations": 0,
+  "fcfs_violations": 0,
+  "events_injected": 6474,
+  "safety_rejections": 0,
+  "agent_incidents": 8026,
+  "agent_messages": 57650,
+  "agent_tool_calls": 47287,
+  "unhandled_incidents": 0,
+  "violation_examples": [],
+  "crash_examples": []
+}

@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+reports/event_log_demo.*
+.env
+memory/
+# internal notes, not part of the submission
+CLAUDE.md
+TASKS.md
+START_HERE_RU.md
+notes/
+reports/demo_run.md
