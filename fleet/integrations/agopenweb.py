@@ -87,7 +87,7 @@ class AgOpenWebBridge:
                     self.disconnected_at = None
                     self.error = None
                     ws.send(f"control.acquire|{self.name}")
-                    last_presence = 0.0
+                    last_presence = last_acquire = 0.0
                     while not self._stop:
                         try:
                             msg = ws.recv(timeout=0.2)
@@ -99,6 +99,9 @@ class AgOpenWebBridge:
                         if now - last_presence > 0.5:
                             ws.send("control.presence")
                             last_presence = now
+                        if not self.has_control and not self.holder and now - last_acquire > 1.0:
+                            ws.send(f"control.acquire|{self.name}")  # control is free: take it back
+                            last_acquire = now
                         while not self.q.empty():
                             c = self.q.get_nowait()
                             ws.send(c)

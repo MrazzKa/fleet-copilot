@@ -385,11 +385,19 @@ function setView(v) {
   $("#agowview").classList.toggle("hidden", v !== "agow");
   map.classList.toggle("hidden", v === "agow");
   $("#farmlegend").style.display = v === "agow" ? "none" : "";
-  if (v === "agow" && agowUrl && !$("#agowframe").src) $("#agowframe").src = agowUrl;
+  if (v === "agow") loadAgowFrame();
   try { localStorage.setItem("fleet.view", v); } catch (e) { /* ignore */ }
   setTimeout(resize, 30);
 }
 $$("#viewsw button").forEach((b) => b.onclick = () => setView(b.dataset.view));
+// Load the AgOpenWeb page only after our GPS Twin holds control, so the embedded page joins as an observer.
+let agowWait = 0;
+function loadAgowFrame() {
+  const f = $("#agowframe"); if (!agowUrl || f.src) return;
+  const a = S && S.agopenweb;
+  if ((a && a.has_control) || agowWait > 16) { f.src = agowUrl; return; }
+  agowWait++; setTimeout(loadAgowFrame, 500);
+}
 fetch("/api/info").then((r) => r.json()).then((info) => {
   const local = ["localhost", "127.0.0.1"].includes(location.hostname);
   agowUrl = info.agopenweb_view ? info.agopenweb_view.replace("localhost", local ? "localhost" : location.hostname) : null;
