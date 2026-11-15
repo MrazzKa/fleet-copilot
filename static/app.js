@@ -1,7 +1,7 @@
 /* Fleet Copilot dashboard, vanilla JS + canvas, no build step. */
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
-const JUDGE = new URLSearchParams(location.search).has("judge");
+const JUDGE = new URLSearchParams(location.search).has("judge") || !["localhost", "127.0.0.1"].includes(location.hostname);  // anyone off this laptop gets the judge view
 if (JUDGE) document.body.classList.add("judge");
 
 const THEMES = {
@@ -124,7 +124,7 @@ $("#qrbtn").onclick = async () => {
     <div style="color:var(--muted)">Scan, then break a tractor, close a bridge or call a wind gust. Watch the agents negotiate a new plan in the network graph.</div>
     <div style="margin-top:10px;font-size:12px;color:var(--muted)">Public URL (paste your tunnel URL):</div><input id="qrbase" value="${esc(base)}"><div id="qrurl" style="font-size:12px;color:var(--blue);word-break:break-all"></div></div></div>`;
   $("#modal").classList.remove("hidden");
-  const upd = () => { const u = $("#qrbase").value.replace(/\/$/, "") + "/?judge=1"; $("#qrimg").src = `/api/qr.svg?url=${encodeURIComponent(u)}`; $("#qrurl").textContent = u; };
+  const upd = () => { const u = $("#qrbase").value.trim().replace(/\/+$/, "") + "/?judge=1"; $("#qrimg").src = `/api/qr.svg?url=${encodeURIComponent(u)}`; $("#qrurl").textContent = u; };
   $("#qrbase").oninput = upd; upd();
 };
 
@@ -241,7 +241,7 @@ function renderJobs() {
 }
 function renderLog() {
   const all = $("#logAll").checked;
-  $("#log").innerHTML = S.log.slice().reverse().filter((e) => all || !ROUTINE.has(e.kind)).map((e) => `<div class="le k-${e.kind}"><span class="tm">${e.clock}</span><span>${KIND_ICON[e.kind] || "·"}</span><span>${esc(e.msg)}${e.source !== "system" ? `<span class="src">${esc(e.source)}</span>` : ""}</span></div>`).join("");
+  $("#log").innerHTML = (S.log || []).slice().reverse().filter((e) => all || !ROUTINE.has(e.kind)).map((e) => `<div class="le k-${e.kind}"><span class="tm">${e.clock}</span><span>${KIND_ICON[e.kind] || "·"}</span><span>${esc(e.msg)}${e.source !== "system" ? `<span class="src">${esc(e.source)}</span>` : ""}</span></div>`).join("");
 }
 async function loadMemory() {
   const M = await fetch("/api/memory").then((r) => r.json());
