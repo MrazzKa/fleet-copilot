@@ -1,7 +1,7 @@
 [
   {
     "id": "night_breakdown",
-    "title": "3 AM breakdown \u2014 tractor B takes over",
+    "title": "3 AM breakdown, tractor B takes over",
     "story": "Night shift. At 03:00 T3 Colt breaks down mid-mowing a HIGH-priority field. Agents must hand the rest to another tractor (via the spare mower at the depot) with no human.",
     "passed": true,
     "checks": [
@@ -21,14 +21,14 @@
         "detail": "done by T2 at 07:13"
       },
       {
-        "check": "J9 partial progress kept \u2014 total worked area equals recorded area (no rework)",
+        "check": "J9 partial progress kept, total worked area equals recorded area (no rework)",
         "ok": true,
         "detail": ""
       },
       {
         "check": "safe re-plan dispatched in < 100 ms",
         "ok": true,
-        "detail": "10.8 ms"
+        "detail": "5.7 ms"
       }
     ],
     "agents": {
@@ -36,7 +36,7 @@
       "reflex": 3,
       "learned": 0,
       "deliberations": 3,
-      "avg_safe_ms": 17.843062333345944,
+      "avg_safe_ms": 8.078531666669164,
       "msgs_per_incident": 7.666666666666667,
       "tool_calls": 22,
       "llm_calls": 0,
@@ -53,7 +53,7 @@
       "on_time": 4,
       "weighted_on_time": 5
     },
-    "seconds": 0.33,
+    "seconds": 0.17,
     "events": [
       [
         "03:00",
@@ -91,14 +91,14 @@
         "detail": "finished 09:48"
       },
       {
-        "check": "J5 partial progress kept \u2014 total worked area equals recorded area (no rework)",
+        "check": "J5 partial progress kept, total worked area equals recorded area (no rework)",
         "ok": true,
         "detail": ""
       },
       {
         "check": "safe re-plan dispatched in < 100 ms",
         "ok": true,
-        "detail": "11.0 ms"
+        "detail": "5.3 ms"
       }
     ],
     "agents": {
@@ -106,7 +106,7 @@
       "reflex": 2,
       "learned": 0,
       "deliberations": 2,
-      "avg_safe_ms": 16.678413500002875,
+      "avg_safe_ms": 7.850271999991776,
       "msgs_per_incident": 10.5,
       "tool_calls": 16,
       "llm_calls": 0,
@@ -123,7 +123,7 @@
       "on_time": 4,
       "weighted_on_time": 5
     },
-    "seconds": 0.25,
+    "seconds": 0.12,
     "events": [
       [
         "07:40",
@@ -146,12 +146,12 @@
         "detail": ""
       },
       {
-        "check": "planner \u2192 navigation message exchanged",
+        "check": "planner -> navigation message exchanged",
         "ok": true,
         "detail": "1 message(s)"
       },
       {
-        "check": "navigation \u2192 planner message exchanged",
+        "check": "navigation -> planner message exchanged",
         "ok": true,
         "detail": "1 message(s)"
       },
@@ -166,7 +166,7 @@
       "reflex": 2,
       "learned": 0,
       "deliberations": 2,
-      "avg_safe_ms": 21.434887500006994,
+      "avg_safe_ms": 9.396631999997851,
       "msgs_per_incident": 10.5,
       "tool_calls": 17,
       "llm_calls": 0,
@@ -183,7 +183,7 @@
       "on_time": 8,
       "weighted_on_time": 14
     },
-    "seconds": 0.25,
+    "seconds": 0.12,
     "events": [
       [
         "06:20",
@@ -221,7 +221,7 @@
       "reflex": 2,
       "learned": 0,
       "deliberations": 2,
-      "avg_safe_ms": 19.7425810000027,
+      "avg_safe_ms": 9.659558499997445,
       "msgs_per_incident": 11.0,
       "tool_calls": 16,
       "llm_calls": 0,
@@ -238,7 +238,7 @@
       "on_time": 6,
       "weighted_on_time": 9
     },
-    "seconds": 0.26,
+    "seconds": 0.13,
     "events": [
       [
         "07:30",
@@ -277,7 +277,7 @@
       "reflex": 3,
       "learned": 0,
       "deliberations": 3,
-      "avg_safe_ms": 18.01918600000363,
+      "avg_safe_ms": 8.64024333333191,
       "msgs_per_incident": 8.333333333333334,
       "tool_calls": 23,
       "llm_calls": 0,
@@ -294,7 +294,7 @@
       "on_time": 8,
       "weighted_on_time": 14
     },
-    "seconds": 0.26,
+    "seconds": 0.12,
     "events": [
       [
         "08:00",
@@ -307,7 +307,7 @@
   {
     "id": "double_fault",
     "title": "Two tractors fail within 90 minutes",
-    "story": "T2 breaks at 07:40, T3 at 09:10. One tractor left \u2014 agents must triage by priority and still beat the baseline.",
+    "story": "T2 breaks at 07:40, T3 at 09:10. One tractor left, agents must triage by priority and still beat the baseline.",
     "passed": true,
     "checks": [
       {
@@ -331,7 +331,7 @@
       "reflex": 3,
       "learned": 1,
       "deliberations": 2,
-      "avg_safe_ms": 8.903144500010285,
+      "avg_safe_ms": 5.360853999995641,
       "msgs_per_incident": 7.25,
       "tool_calls": 20,
       "llm_calls": 0,
@@ -348,7 +348,7 @@
       "on_time": 3,
       "weighted_on_time": 4
     },
-    "seconds": 0.26,
+    "seconds": 0.14,
     "events": [
       [
         "07:40",
@@ -368,7 +368,7 @@
   },
   {
     "id": "learned_reflex",
-    "title": "Same fault twice \u2192 learned reflex",
+    "title": "Same fault twice -> learned reflex",
     "story": "T2 breaks at 07:40, is repaired at 09:00 and breaks again at 11:00. The first time the Planner deliberates; the second time it must reuse the learned reflex from shared memory instantly.",
     "passed": true,
     "checks": [
@@ -380,7 +380,7 @@
       {
         "check": "2nd identical fault solved by a learned reflex (no deliberation)",
         "ok": true,
-        "detail": "1st: reflex + deliberation 30 ms; 2nd: learned 1.8 ms"
+        "detail": "1st: reflex + deliberation 19 ms; 2nd: learned 1.2 ms"
       }
     ],
     "agents": {
@@ -388,7 +388,7 @@
       "reflex": 3,
       "learned": 1,
       "deliberations": 2,
-      "avg_safe_ms": 10.407606749993192,
+      "avg_safe_ms": 4.937745749998612,
       "msgs_per_incident": 9.0,
       "tool_calls": 22,
       "llm_calls": 0,
@@ -405,7 +405,7 @@
       "on_time": 4,
       "weighted_on_time": 5
     },
-    "seconds": 0.24,
+    "seconds": 0.13,
     "events": [
       [
         "07:40",
@@ -452,7 +452,7 @@
       "reflex": 5,
       "learned": 0,
       "deliberations": 2,
-      "avg_safe_ms": 6.00939819999553,
+      "avg_safe_ms": 2.857773399995267,
       "msgs_per_incident": 5.8,
       "tool_calls": 21,
       "llm_calls": 0,
@@ -469,7 +469,7 @@
       "on_time": 8,
       "weighted_on_time": 14
     },
-    "seconds": 0.18,
+    "seconds": 0.09,
     "events": [
       [
         "09:00",
@@ -515,7 +515,7 @@
       "reflex": 1,
       "learned": 0,
       "deliberations": 1,
-      "avg_safe_ms": 19.60010999999895,
+      "avg_safe_ms": 10.611750000009579,
       "msgs_per_incident": 11.0,
       "tool_calls": 8,
       "llm_calls": 0,
@@ -532,7 +532,7 @@
       "on_time": 8,
       "weighted_on_time": 14
     },
-    "seconds": 0.18,
+    "seconds": 0.08,
     "events": []
   },
   {
@@ -562,7 +562,7 @@
       "reflex": 9,
       "learned": 1,
       "deliberations": 4,
-      "avg_safe_ms": 1.6152564000037728,
+      "avg_safe_ms": 0.6554292999965128,
       "msgs_per_incident": 6.6,
       "tool_calls": 49,
       "llm_calls": 0,
@@ -579,7 +579,7 @@
       "on_time": 2,
       "weighted_on_time": 5
     },
-    "seconds": 0.1,
+    "seconds": 0.05,
     "events": [
       [
         "09:29",

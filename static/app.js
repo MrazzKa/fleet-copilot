@@ -98,11 +98,12 @@ $("#cmd").onsubmit = async (e) => {
 };
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 if (SR) {
-  const rec = new SR(); rec.lang = localStorage.getItem("voiceLang") || "en-US"; rec.interimResults = true; let on = false;
-  rec.onresult = (e) => { const t = [...e.results].map((r) => r[0].transcript).join(""); $("#cmdtext").value = t; if (e.results[e.results.length - 1].isFinal) { rec.stop(); setTimeout(() => $("#cmd").requestSubmit(), 150); } };
+  const rec = new SR(); rec.lang = "en-US"; rec.interimResults = true; rec.continuous = false; let on = false, heard = false;
+  rec.onstart = () => { heard = false; toast("Listening... speak now", "info"); };
+  rec.onresult = (e) => { heard = true; const t = [...e.results].map((r) => r[0].transcript).join(""); $("#cmdtext").value = t; if (e.results[e.results.length - 1].isFinal) { rec.stop(); setTimeout(() => $("#cmd").requestSubmit(), 150); } };
+  rec.onerror = (e) => { const why = { "not-allowed": "microphone blocked: click the lock icon in the address bar and allow the microphone", "no-speech": "no speech heard, try again closer to the mic", "audio-capture": "no microphone found, check Windows sound settings", "network": "speech service needs internet" }[e.error] || e.error; toast("Voice: " + why, "err"); };
   rec.onend = () => { on = false; $("#mic").classList.remove("rec"); };
-  $("#mic").onclick = () => { if (on) { rec.stop(); return; } on = true; $("#mic").classList.add("rec"); rec.start(); };
-  $("#mic").oncontextmenu = (e) => { e.preventDefault(); rec.lang = rec.lang === "en-US" ? "ru-RU" : "en-US"; localStorage.setItem("voiceLang", rec.lang); toast("Voice: " + rec.lang); };
+  $("#mic").onclick = () => { if (on) { rec.stop(); return; } on = true; $("#mic").classList.add("rec"); try { rec.start(); } catch (err) { on = false; $("#mic").classList.remove("rec"); toast("Voice: " + err.message, "err"); } };
 } else { $("#mic").onclick = () => toast("Voice input needs Chrome (localhost or https)", "err"); }
 
 function showAnswer(q, text, whynot, job) {

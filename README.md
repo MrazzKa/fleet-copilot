@@ -26,7 +26,7 @@ Fleet Copilot does that part. It notices the problem, makes a new plan, checks t
 | Navigation | Answers route questions: which fields are cut off, which tractor needs a detour. |
 | Safety | Checks every plan on its own with 8 rules before anything moves. Can reject a plan. |
 | Execution | Sends the approved plan to the tractors and watches that it is followed. |
-| Operator Liaison | Talks to people. Understands typed or spoken commands in English or Russian. |
+| Operator Liaison | Talks to people. Understands typed or spoken commands in plain English. |
 | GPS Twin (Telemetry) | Connects to AgOpenWeb, drives its vehicle and reports stalls or a lost link. |
 
 They talk over a message bus. Every message has a sender, a receiver, an incident id and a time, so you can follow one incident from start to end. They share one memory: facts (for example the last GPS position), past incidents, learned reflexes and operator rules. Memory is saved to disk.
