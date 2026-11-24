@@ -165,3 +165,13 @@ body.mc.judge{overflow:hidden;height:100vh}
 /* drawer cards on the dark theme */
 .drawer .card{background:#111a24;border-color:#1f2d3b;color:#e6edf3}
 .drawer .tabcard .tab{overflow:auto}
+/* judges' phones */
+.mc.judge #sat{height:auto;max-height:none}
+.mc.judge #cmdfold{display:none}
+.mc.judge footer{min-height:0;justify-content:center}
+.mc.judge .quick{justify-content:center}
+.mc.judge .leaflet-top.leaflet-left{top:auto;bottom:230px;left:0}
+.mc.judge .leaflet-bottom.leaflet-right{bottom:200px;right:0}
+.mc.judge .leaflet-control-attribution{max-width:60vw}
+.mc.judge footer{position:fixed;top:auto;bottom:12px;left:12px;right:12px;width:auto}
+.mc.judge #toasts{bottom:auto;top:150px}

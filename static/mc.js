@@ -20,7 +20,7 @@
   $("#drawerx").onclick = () => setDrawer(false);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") setDrawer(false); });
   $$("[data-collapse]").forEach((h) => h.onclick = () => { const p = h.parentElement; p.classList.toggle(innerWidth <= 1100 ? "open" : "collapsed"); });
-  if (innerWidth < 1600) $("footer").classList.add("folded");  // fault buttons one click away; keeps the map clear
+  if (innerWidth < 1600 && !JUDGE) $("footer").classList.add("folded");  // fault buttons one click away; keeps the map clear
   $("#cmdfold").onclick = () => { $("footer").classList.toggle("folded"); fitFooter(); };
   function fitFooter() {
     const w = $("#agentbar").getBoundingClientRect().width, h = $("footer").getBoundingClientRect().height;
