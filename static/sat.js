@@ -119,13 +119,17 @@ function renderSat() {
       cv.done.setLatLngs([...fo.shape.pts.slice(0, a.idx), a.ll]); cv.todo.setLatLngs([a.ll, ...fo.shape.pts.slice(a.idx)]);
     } else {
       cv.done.setLatLngs([]); cv.todo.setLatLngs([]);
-      if (Math.abs(tr.x - W.depot[0]) < 0.6 && Math.abs(tr.y - W.depot[1]) < 0.6) { const i = Object.keys(trColor).indexOf(tr.id); target = gridLL(W.depot[0] + (i - 1) * 0.45, W.depot[1] - 0.35); }  // parked side by side
     }
     SATV.target = SATV.target || {}; SATV.target[tr.id] = target;
     const live = S.agopenweb && S.agopenweb.tractor === tr.id;
     const cls = `trk ${tr.status === "broken" ? "broken" : ""} ${tr.status === "work" ? "working" : ""}`;
     const html = `<div class="${cls}" style="--c:${col}">${tr.status === "broken" ? "✖" : tr.id}</div><div class="trklbl">${esc(tr.name)} · ${esc(tr.implement || "-")}${tr.status !== "work" && tr.status !== "travel" ? ` · ${tr.status}` : ""}${live ? " <span class=simtag>sim</span>" : ""}</div>`;
-    if (SATV.trkHtml?.[tr.id] !== html) { SATV.trkHtml = SATV.trkHtml || {}; SATV.trkHtml[tr.id] = html; SATV.trk[tr.id].setIcon(L.divIcon({ className: "", html, iconSize: [30, 30], iconAnchor: [15, 15] })); }
+    if (SATV.trkHtml?.[tr.id] !== html) {
+      SATV.trkHtml = SATV.trkHtml || {}; SATV.trkHtml[tr.id] = html; const mk = SATV.trk[tr.id];
+      mk.setIcon(L.divIcon({ className: "", html, iconSize: [30, 30], iconAnchor: [15, 15] }));
+      const tip = `${tr.id} ${esc(tr.name)} · ${esc(tr.implement || "-")} · ${tr.status}${tr.cur && tr.cur.job_id ? " · " + tr.cur.job_id : ""}`;
+      if (mk.getTooltip()) mk.setTooltipContent(tip); else mk.bindTooltip(tip, { direction: "top", offset: [0, -16] });
+    }
     const r = showRoutes && tr.status !== "broken" && tr.route ? tr.route : [];
     SATV.routes[tr.id].setLatLngs(r.length ? [SATV.pos[tr.id], ...r.map(([x, y]) => gridLL(x, y))] : []);
   }
@@ -146,11 +150,29 @@ function renderSatLive() {
 
 // smooth motion between 10 Hz ticks
 function satFrame() {
-  if (SATV.map && VIEW === "sat" && S) for (const tr of S.tractors) {
-    const p = SATV.pos[tr.id], tg = SATV.target && SATV.target[tr.id], mk = SATV.trk[tr.id]; if (!p || !tg) continue;
-    const far = Math.abs(tg[0] - p[0]) > 0.01 || Math.abs(tg[1] - p[1]) > 0.01;  // > ~1 km: jump (reset)
-    p[0] = far ? tg[0] : p[0] + (tg[0] - p[0]) * 0.2; p[1] = far ? tg[1] : p[1] + (tg[1] - p[1]) * 0.2; mk.setLatLng(p);
-    const rt = SATV.routes[tr.id]; const ll = rt.getLatLngs(); if (ll.length) { ll[0] = L.latLng(p); rt.setLatLngs(ll); }
+  if (SATV.map && VIEW === "sat" && S) {
+    const live = [];
+    for (const tr of S.tractors) {
+      const p = SATV.pos[tr.id], tg = SATV.target && SATV.target[tr.id]; if (!p || !tg || !SATV.trk[tr.id]) continue;
+      const far = Math.abs(tg[0] - p[0]) > 0.01 || Math.abs(tg[1] - p[1]) > 0.01;  // > ~1 km: jump (reset)
+      p[0] = far ? tg[0] : p[0] + (tg[0] - p[0]) * 0.2; p[1] = far ? tg[1] : p[1] + (tg[1] - p[1]) * 0.2;
+      live.push({ id: tr.id, p, pt: SATV.map.latLngToLayerPoint(p) });
+    }
+    // markers that sit on top of each other (e.g. all at the yard) fan out on a small ring;
+    // any marker whose label would collide with a neighbour shows only its badge (full label on hover)
+    const grp = live.map((_, i) => i), find = (i) => (grp[i] === i ? i : (grp[i] = find(grp[i])));
+    for (let i = 0; i < live.length; i++) for (let j = i + 1; j < live.length; j++) if (live[i].pt.distanceTo(live[j].pt) < 36) grp[find(i)] = find(j);
+    const groups = {}; live.forEach((m, i) => (groups[find(i)] = groups[find(i)] || []).push(m));
+    for (const g of Object.values(groups)) {
+      const n = g.length, cx = g.reduce((a, m) => a + m.pt.x, 0) / n, cy = g.reduce((a, m) => a + m.pt.y, 0) / n, R = n > 1 ? 18 / Math.sin(Math.PI / n) : 0;
+      g.forEach((m, k) => { const a = -Math.PI / 2 + (2 * Math.PI * k) / n; m.shown = n > 1 ? L.point(cx + R * Math.cos(a), cy + R * Math.sin(a)) : m.pt; m.fanned = n > 1; });
+    }
+    for (const m of live) {
+      const compact = m.fanned || live.some((o) => o !== m && Math.abs(o.shown.x - m.shown.x) < 125 && Math.abs(o.shown.y - m.shown.y) < 26);
+      const mk = SATV.trk[m.id], at = m.fanned ? SATV.map.layerPointToLatLng(m.shown) : L.latLng(m.p);
+      mk.setLatLng(at); const el = mk.getElement(); if (el) el.classList.toggle("compact", compact);
+      const rt = SATV.routes[m.id]; const ll = rt.getLatLngs(); if (ll.length) { ll[0] = at; rt.setLatLngs(ll); }
+    }
   }
   requestAnimationFrame(satFrame);
 }

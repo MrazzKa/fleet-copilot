@@ -315,3 +315,4 @@ body.judge #sat{height:58vw;max-height:55vh;flex:none}
 .agow.mini{width:auto;padding:5px 8px}
 .agow.mini > :not(.agowhead){display:none}
 .agow.mini .agowhead{margin-bottom:0}
+.compact .trklbl{display:none}
