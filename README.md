@@ -52,7 +52,7 @@ All numbers come from the code in this repo. You can rerun them (see below).
 - 100 random farms: about **25% better weighted on-time score** and about **14% less travel per job** than the baseline.
 - Chaos test, 1000 random farms with random faults: **0 rule violations, 0 crashes.** See `reports/chaos.json`.
 - 10 fault test cases (night breakdown, double fault, bridge closure, wind gust, low fuel, flooded field and more): **10 of 10 pass.** See `reports/test_cases.md`.
-- Unit tests: `pytest` (12 tests).
+- Unit tests: `pytest` (13 tests).
 
 ## Run it
 
@@ -64,6 +64,20 @@ cp .env.example .env   # optional: add an API key
 ```
 
 `run.sh` makes a virtual environment, installs the packages and starts the server.
+
+### Real farm mode
+
+```bash
+FLEET_SCENARIO=maricopa ./run.sh
+```
+
+The main view becomes **Satellite**: a real farm area near the University of Arizona Maricopa Agricultural Center (Maricopa, AZ) on Esri World Imagery.
+
+- **Real:** the 10 field boundaries (OpenStreetMap `landuse=farmland`, © OpenStreetMap contributors, see `scenarios/maricopa_fields.geojson`), their location and size, the drain on the west side and the Smith-Enke Road culvert, and the AgOpenWeb vehicle's GPS position (the **LIVE GPS** marker and its trail).
+- **Simulated:** tractors T1 to T3 on the map, the jobs, their progress, the wind, and the north crossing.
+- The simulator still runs on a grid (100 m cells) laid over the real map. `scripts/build_maricopa.py` rebuilds `scenarios/maricopa.json` from the GeoJSON.
+- On connect and on reset, the bridge sends `sim.setCoords` with the center of T1's first field. AgOpenWeb's simulator then drives around its own local origin (the first coordinates it ever received), so the live vehicle may circle a little away from that point. The marker always shows where AgOpenWeb says the vehicle is.
+- The satellite view needs internet (Leaflet from unpkg, Esri tiles). Without internet, use **Farm map**.
 
 ### With Docker
 
@@ -122,7 +136,7 @@ The "Judges" button shows a QR code. People who open the public link can break o
 
 - We drive AgOpenWeb's built-in simulator, not a real tractor. Nothing here has been tested on real machines.
 - One AgOpenWeb vehicle is mirrored (tractor T1). The other tractors are simulated.
-- The farm is a grid model. Field shapes, slopes and soil are not modeled.
+- The farm is a grid model. In real farm mode the field outlines are real, but the simulator still works on 100 m grid cells. Slopes and soil are not modeled.
 - The local Ollama fallback is supported in code but was not tested end to end on the demo laptop.
 - The public link has rate limits and a short list of allowed actions, but no login.
 
@@ -142,7 +156,7 @@ fleet/            simulator, planner, safety checks, explanations
 fleet/agents/     agents, message bus, shared memory, LLM tools, test cases
 fleet/integrations/agopenweb.py   AgOpenWeb client (binary WebSocket protocol)
 static/           dashboard (plain HTML, CSS and JavaScript)
-scenarios/        demo farm
+scenarios/        demo farm and the real Maricopa farm (GeoJSON + scenario)
 reports/          benchmark, chaos test and test case results
 scripts/          AgOpenWeb probe and test helpers
 tests/            pytest
