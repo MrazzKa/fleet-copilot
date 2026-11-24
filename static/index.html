@@ -58,7 +58,7 @@
 <div id="agentbar" class="mcbar"><div id="agentdots" class="agentdots"></div><div id="keym" class="keym"></div><button id="detailsbtn" class="mcbtn">Details</button></div>
 
 <div id="drawer" class="drawer">
-  <div class="drawerhead"><b>Details</b><span class="psub">agent conversation, network, plan, tests, logs</span><button id="drawerx" class="mcbtn">Close</button></div>
+  <div class="drawerhead"><b>Details</b><span class="psub">agent conversation, network, plan, tests, logs</span><button id="sharebtn" class="mcbtn" title="QR code and public link for viewers">Share link</button><button id="drawerx" class="mcbtn">Close</button></div>
     <div class="card ganttcard">
       <div class="bottomsw"><button data-bottom="story" class="on">Incident story</button><button data-bottom="gantt">Schedule</button><select id="storypick" title="Pick an incident"></select></div>
       <div id="story" class="story"></div>
@@ -76,8 +76,9 @@
         <button data-tab="plan">Plan &amp; why</button>
         <button data-tab="jobs">Jobs</button>
         <button data-tab="memory">Memory</button>
-        <button data-tab="tests">Test cases</button>
         <button data-tab="log">Log</button>
+        <span class="tabsep" title="Engineering views"></span>
+        <button data-tab="tests">Test cases</button>
         <button data-tab="proof">Proof</button>
       </nav>
       <div class="tab on" id="tab-feed">

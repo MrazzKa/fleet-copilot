@@ -181,3 +181,7 @@ body.mc.judge{overflow:hidden;height:100vh}
 .mc .score{flex:0 1 auto}
 .mc .hright{margin-left:auto}
 .mc header button,.mc .scoreboard .who,.mc .pill{white-space:nowrap}
+/* product mode (real-farm scenario) */
+.mc.product #qrbtn{display:none}
+.drawerhead #sharebtn{margin-left:auto}.drawerhead #sharebtn + #drawerx{margin-left:0}
+.tabs .tabsep{width:1px;align-self:stretch;margin:6px 6px;background:rgba(255,255,255,.15)}

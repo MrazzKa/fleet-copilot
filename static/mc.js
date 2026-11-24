@@ -18,6 +18,9 @@
   const setDrawer = (on) => { drawer.classList.toggle("open", on); if (on) setTimeout(resize, 240); };
   $("#detailsbtn").onclick = () => setDrawer(!drawer.classList.contains("open"));
   $("#drawerx").onclick = () => setDrawer(false);
+  $("#sharebtn").onclick = () => $("#qrbtn").click();
+  // product mode on a real-farm scenario: no hackathon-only controls on the main screen (all still in Details)
+  fetch("/api/info").then((r) => r.json()).then((i) => { if (i.geo) document.body.classList.add("product"); }).catch(() => {});
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") setDrawer(false); });
   $$("[data-collapse]").forEach((h) => h.onclick = () => { const p = h.parentElement; p.classList.toggle(innerWidth <= 1100 ? "open" : "collapsed"); });
   if (innerWidth < 1600 && !JUDGE) $("footer").classList.add("folded");  // fault buttons one click away; keeps the map clear
