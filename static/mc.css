@@ -185,3 +185,13 @@ body.mc.judge{overflow:hidden;height:100vh}
 .mc.product #qrbtn{display:none}
 .drawerhead #sharebtn{margin-left:auto}.drawerhead #sharebtn + #drawerx{margin-left:0}
 .tabs .tabsep{width:1px;align-self:stretch;margin:6px 6px;background:rgba(255,255,255,.15)}
+.scnrow{display:flex;align-items:center;gap:6px}
+.simchip{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:1px 7px;border-radius:999px;background:rgba(227,163,59,.16);color:#f5d08f;border:1px solid rgba(227,163,59,.4);white-space:nowrap;cursor:help}
+.mc header .brand small{max-width:190px}
+@media (max-width:1300px){ .mc header .brand{display:flex} .mc header .brand b{display:none} .mc header .brand small{max-width:118px} }
+.mc .hright{min-width:0;flex:0 1 auto;overflow:hidden}
+.mc .hright .pill{min-width:0;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;display:block;max-width:220px}
+.mc .gpschip{flex:none}
+@media (max-width:1300px){ .mc #theme{display:none} .mc .hright .pill{max-width:150px} }
+.mc .gpsmenu{position:fixed;top:68px;right:auto}
+.gpsmenu button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#e8efe9;border-radius:8px;padding:6px 10px}.gpsmenu button:hover{background:rgba(255,255,255,.12)}

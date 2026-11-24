@@ -32,15 +32,19 @@
   addEventListener("resize", fitFooter);
 
   // ---------------------------------------------------------------- GPS chip (replaces the floating GPS twin box)
-  $("#gpschipbtn").onclick = (e) => { e.stopPropagation(); $("#gpsmenu").classList.toggle("hidden"); };
-  document.addEventListener("click", (e) => { if (!$("#gpschip").contains(e.target)) $("#gpsmenu").classList.add("hidden"); });
+  $("#gpschipbtn").onclick = (e) => {
+    e.stopPropagation(); const m = $("#gpsmenu"), r = $("#gpschipbtn").getBoundingClientRect();
+    m.style.left = `${Math.max(8, Math.min(r.left, innerWidth - 240))}px`; m.classList.toggle("hidden");
+  };
+  document.body.appendChild($("#gpsmenu"));  // outside the top bar, which clips its children
+  document.addEventListener("click", (e) => { if (!$("#gpschip").contains(e.target) && !$("#gpsmenu").contains(e.target)) $("#gpsmenu").classList.add("hidden"); });
   $$("[data-agc]").forEach((b) => b.onclick = () => post("/api/agow", { action: b.dataset.agc }).then((r) => { if (!r.ok) toast(r.msg, "err"); else toast("AgOpenWeb <- " + b.textContent.trim()); $("#gpsmenu").classList.add("hidden"); }));
   function renderChip() {
     const a = S.agopenweb, chip = $("#gpschip");
     if (!a || JUDGE) { chip.classList.add("hidden"); return; }
     chip.classList.remove("hidden");
     chip.classList.toggle("live", !!a.fresh); chip.classList.toggle("fault", !!a.gps_fault_active);
-    $("#gpschiptxt").textContent = a.gps_fault_active ? "AgOpenWeb · GPS fault" : a.fresh ? `AgOpenWeb LIVE · ${a.has_control ? "control" : "observer"}` : a.connected ? "AgOpenWeb · waiting" : "AgOpenWeb · offline";
+    $("#gpschiptxt").textContent = a.gps_fault_active ? "AgOpenWeb · GPS fault" : a.fresh ? `AgOpenWeb LIVE${innerWidth < 1400 ? "" : ` · ${a.has_control ? "control" : "observer"}`}` : a.connected ? "AgOpenWeb · waiting" : "AgOpenWeb · offline";
     const p = a.pose;
     $("#gpsmeta").innerHTML = p ? `${a.tractor} · <b>${p.speed}</b> kph · fix ${a.fix} · ${a.dist_m} m${a.note ? `<br>${esc(a.note)}` : ""}` : "waiting for GPS ticks";
     $("[data-agc=take_control]").style.display = a.has_control ? "none" : "";

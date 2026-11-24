@@ -72,7 +72,7 @@ $("#feedTools").onchange = () => S && renderFeed();
 function buildQuick(specs) {
   const q = $("#quick"); q.innerHTML = "";
   const add = (h) => q.insertAdjacentHTML("beforeend", h);
-  add(`<span class="lbl">Faults:</span>`);
+  add(`<span class="lbl">Simulate:</span>`);
   Object.keys(specs).forEach((t) => add(`<button data-ev='{"kind":"breakdown","tractor":"${t}"}' style="border-color:${trColor[t]};color:${trColor[t]}">💥 Break ${t}</button>`));
   if (!JUDGE) Object.keys(specs).forEach((t) => add(`<button data-ev='{"kind":"repair","tractor":"${t}"}' title="Repair ${t}">✚ Fix ${t}</button>`));
   add(`<button data-bridge="north_bridge">⛔ N bridge</button><button data-bridge="south_bridge">⛔ S bridge</button><button data-ev='{"kind":"wind","mph":14,"hours":2}'>💨 Gust</button><button id="rushBtn">⚡ Rush</button>`);
@@ -168,7 +168,7 @@ function renderScore() {
   const cell = (a, b, lowerBetter, suffix = "") => { const win = lowerBetter ? a < b : a > b, lose = lowerBetter ? a > b : a < b; return [`<div class="v ${win ? "win" : ""}">${a}${suffix}</div>`, `<div class="v ${lose ? "" : "lose"}">${b}${suffix}</div>`]; };
   const cols = [["On time", cell(c.on_time, f.on_time, false, `<small>/${c.jobs_total}</small>`)], ["High-prio", cell(c.high_on_time, f.high_on_time, false, `<small>/${c.high_total}</small>`)],
     ["Hectares", cell(Math.round(c.area_done), Math.round(f.area_done), false)], ["Travel", cell(c.travel_min, f.travel_min, true)], ["Idle+wait", cell(c.idle_min + c.wait_min, f.idle_min + f.wait_min, true)]];
-  $("#score").innerHTML = `<div class="scoreboard"><div></div>${cols.map((x) => `<div class="h">${x[0]}</div>`).join("")}<div class="who co">Agents</div>${cols.map((x) => x[1][0]).join("")}<div class="who fc">FCFS ghost</div>${cols.map((x) => x[1][1]).join("")}</div>`;
+  $("#score").innerHTML = `<div class="scoreboard"><div></div>${cols.map((x) => `<div class="h">${x[0]}</div>`).join("")}<div class="who co">Agents</div>${cols.map((x) => x[1][0]).join("")}<div class="who fc" title="Baseline: the same day and events, planned first-come, first-served">Baseline (FCFS)</div>${cols.map((x) => x[1][1]).join("")}</div>`;
 }
 
 function renderOrchMetrics() {
@@ -524,7 +524,7 @@ function drawTractor(ctx, tr, ghost, t) {
   if (Math.abs(tr.x - W.depot[0]) < 0.6 && Math.abs(tr.y - W.depot[1]) < 0.6) { cx += (idx - 1) * cs * 0.45; cy += (ghost ? 0.35 : -0.1) * cs; }
   const R = cs * (ghost ? 0.3 : 0.38), col = trColor[tr.id];
   if (ghost) { ctx.globalAlpha = 0.6; ctx.setLineDash([3, 3]); ctx.strokeStyle = tr.status === "broken" ? T.red : T.ghost; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle = T.ghost; ctx.font = `700 ${Math.max(8, cs * 0.25)}px Inter, sans-serif`; ctx.textAlign = "center"; ctx.fillText(`${tr.id}·FCFS`, cx, cy + R + 10); ctx.globalAlpha = 1; return; }
+    ctx.fillStyle = T.ghost; ctx.font = `700 ${Math.max(8, cs * 0.25)}px Inter, sans-serif`; ctx.textAlign = "center"; ctx.fillText(`${tr.id}·baseline`, cx, cy + R + 10); ctx.globalAlpha = 1; return; }
   if (tr.status === "work") { ctx.strokeStyle = hexA(col, 0.45); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, R + 6 + 3 * Math.sin(t / 200), 0, Math.PI * 2); ctx.stroke(); }
   if (tr.status === "broken") for (let i = 0; i < 4; i++) { const ph = (t / 1400 + i / 4) % 1; ctx.fillStyle = `rgba(90,90,90,${0.35 * (1 - ph)})`; ctx.beginPath(); ctx.arc(cx + Math.sin(i * 2 + t / 500) * 4, cy - R - ph * cs * 0.9, 3 + ph * 7, 0, Math.PI * 2); ctx.fill(); }
   ctx.fillStyle = tr.status === "broken" ? T.red : col; ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
@@ -549,7 +549,7 @@ function drawGantt() {
   const jt = Object.fromEntries(S.jobs.map((j) => [j.id, j.type]));
   rows.forEach(({ tr, ghost }, i) => {
     const y = rowY(i), h = rh - 5;
-    ctx.fillStyle = ghost ? T.muted : trColor[tr.id]; ctx.font = `700 ${ghost ? 9.5 : 11}px Inter`; ctx.textAlign = "left"; ctx.fillText(ghost ? `${tr.id} FCFS` : `${tr.id} ${tr.name}`, 2, y + h - 2);
+    ctx.fillStyle = ghost ? T.muted : trColor[tr.id]; ctx.font = `700 ${ghost ? 9.5 : 11}px Inter`; ctx.textAlign = "left"; ctx.fillText(ghost ? `${tr.id} baseline` : `${tr.id} ${tr.name}`, 2, y + h - 2);
     for (const [s, e, kind, job] of tr.history || []) { let c = { travel: "#b9b29f", wait: "#e0b45a", refuel: "#9a9a9a", swap: "#8b74d6", broken: "#d36b5d" }[kind]; if (kind === "work") c = TYPE_COLOR[jt[job]] || T.green; if (!c) continue; ctx.fillStyle = ghost ? hexA(c, 0.45) : c; ctx.fillRect(X(s), y, Math.max(1, X(e) - X(s)), h); }
     if (!ghost) {
       for (const tk of [...(tr.cur ? [tr.cur] : []), ...(tr.queue || [])]) {

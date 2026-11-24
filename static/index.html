@@ -11,7 +11,7 @@
 </head>
 <body class="mc">
 <header>
-  <div class="brand"><span class="mark">🌾</span><div><b>Fleet&nbsp;Copilot</b><small id="scn">connecting…</small></div></div>
+  <div class="brand"><span class="mark">🌾</span><div><b>Fleet&nbsp;Copilot</b><div class="scnrow"><small id="scn">connecting…</small><span class="simchip" title="Tractors T2 and T3, jobs, wind and events are simulated. Field boundaries and the AgOpenWeb GPS are real.">Simulation</span></div></div></div>
   <div class="clockbox"><div id="clock">06:00</div><div class="dayprog"><i id="dayfill"></i></div></div>
   <div class="ctrl">
     <button id="play" class="primary">▶ Start day</button>
@@ -35,7 +35,7 @@
     <div class="card mapcard">
       <div class="cardhead"><div class="viewsw" id="viewsw"><button data-view="sat" style="display:none">🛰 Satellite</button><button data-view="agow" class="on">AgOpenWeb (live GPS)</button><button data-view="farm">Farm map</button></div><div class="maplegend" id="farmlegend">
         <span><i class="sw spray"></i>spray</span><span><i class="sw mow"></i>mow</span><span><i class="sw till"></i>till</span><span><i class="sw seed"></i>seed</span>
-        <label><input type="checkbox" id="showGhost" checked> FCFS ghost</label><label><input type="checkbox" id="showPaths" checked> routes</label></div></div>
+        <label title="Same day, same events, planned first-come, first-served"><input type="checkbox" id="showGhost" checked> Baseline (first-come, first-served)</label><label><input type="checkbox" id="showPaths" checked> routes</label></div></div>
       <canvas id="map"></canvas>
       <div id="sat" class="hidden"></div>
       <div id="agowview" class="agowview hidden">
@@ -98,7 +98,7 @@
     </div>
 </div>
 
-<footer><button type="button" id="cmdfold" class="mcbtn" title="Show or hide the fault buttons">Faults</button>
+<footer><button type="button" id="cmdfold" class="mcbtn" title="Inject a simulated event: breakdown, repair, closed crossing, wind gust, rush job">Simulate event</button>
   <form id="cmd" autocomplete="off">
     <button type="button" id="mic" title="Talk to the Operator Liaison agent (English)">🎤</button>
     <input id="cmdtext" placeholder='Talk to the fleet… “Bison is making a noise and stopped” · “close the north bridge” · “why not T3 for J5”'>
