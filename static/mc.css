@@ -162,3 +162,6 @@ body.mc.judge{overflow:hidden;height:100vh}
 @media (max-width:1300px){ .mc .scoreboard{gap:0 6px}.mc .scoreboard .v{font-size:13px}.mc .scoreboard .h{font-size:8.5px;letter-spacing:.2px} .mc header{gap:8px;padding:5px 8px} }
 .mc #toasts{top:auto;bottom:118px}
 .mc #thinking{top:76px;bottom:auto}
+/* drawer cards on the dark theme */
+.drawer .card{background:#111a24;border-color:#1f2d3b;color:#e6edf3}
+.drawer .tabcard .tab{overflow:auto}

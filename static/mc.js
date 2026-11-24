@@ -1,6 +1,6 @@
 /* Mission Control panels (Fleet, Alerts, Agents bar, GPS chip, Details drawer). Reads globals from app.js / sat.js. */
 (() => {
-  if (!localStorage.getItem("theme")) setTheme("night");  // drawer content reads best on the dark theme
+  if (!localStorage.getItem("mc.themed")) { setTheme("night"); localStorage.setItem("mc.themed", "1"); }  // dark theme once; the theme button still switches
   const STATUS = { work: "Working", travel: "Traveling", wait: "Waiting", refuel: "Refueling", swap: "Swapping implement", broken: "Broken", idle: "Idle" };
   const STEP_COLOR = { gps: "#ef5a4a", broke: "#ef5a4a", detected: "#e3a33b", route: "#5aa2ff", planned: "#5aa2ff", verified: "#3fb68b", rejected: "#ef5a4a",
     executed: "#3fb68b", second: "#a78bfa", learned: "#a78bfa", recovered: "#2dd4bf", normal: "#2dd4bf" };

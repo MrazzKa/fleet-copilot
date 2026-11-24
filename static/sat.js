@@ -18,6 +18,8 @@ function initSat() {
   m.attributionControl.addAttribution("Field boundaries © OpenStreetMap contributors");
   L.control.scale({ imperial: true, metric: true, position: "bottomright" }).addTo(m);
   SATV.map = m;
+  m.createPane("labels").style.zIndex = 590;  // field/crossing labels sit under the tractor markers (600), never on top of them
+  m.getPane("labels").style.pointerEvents = "none";
   // modeled drain: the water cells of the river column, a thin blue line (crossings leave gaps)
   const segs = []; let run = [];
   const water = new Set(W.water.map((c) => c.join(",")));
@@ -27,10 +29,10 @@ function initSat() {
   for (const f of W.fields) {
     if (!f.polygon) continue;
     const p = L.polygon(f.polygon, { color: "#fff", weight: 2, fillOpacity: 0.15 }).addTo(m);
-    p.bindTooltip("", { permanent: true, direction: "center", className: "fieldlbl", opacity: 1 }); p.bindPopup("");
+    p.bindTooltip("", { permanent: true, direction: "center", className: "fieldlbl", opacity: 1, pane: "labels" }); p.bindPopup("");
     SATV.fields[f.id] = { poly: p, f, shape: shapeOf(f) };
   }
-  for (const b of W.bridges) SATV.cross[b.id] = L.circleMarker(gridLL(b.cell[0], b.cell[1]), { radius: 7, color: "#fff", weight: 2, fillColor: "#a07a4a", fillOpacity: 1 }).addTo(m).bindTooltip(b.name, { permanent: true, direction: "left", className: "crosslbl", offset: [-8, 0] });
+  for (const b of W.bridges) SATV.cross[b.id] = L.circleMarker(gridLL(b.cell[0], b.cell[1]), { radius: 7, color: "#fff", weight: 2, fillColor: "#a07a4a", fillOpacity: 1 }).addTo(m).bindTooltip(b.name, { permanent: true, direction: "left", className: "crosslbl", offset: [-8, 0], pane: "labels" });
   SATV.blocked = L.layerGroup().addTo(m);
   SATV.depot = L.marker(gridLL(W.depot[0], W.depot[1]), { icon: L.divIcon({ className: "", html: `<div class="satdepot">⛽ ${esc(W.depot_name || "Depot")}</div>`, iconSize: null, iconAnchor: [0, 0] }), interactive: false, zIndexOffset: -100 }).addTo(m);
   SATV.trail = L.polyline([], { color: "#22d3ee", weight: 3, opacity: 0.9 }).addTo(m);
