@@ -521,6 +521,7 @@ class TelemetryAgent(Agent):
         self.last_fact = 0.0
         self.note = ""
         self.injected = False  # demo fault: the vehicle is "physically" stuck until Resume
+        self.place_seq = 0
 
     def desired(self) -> bool:
         tr = self.sim.tractors.get(self.b.tractor)
@@ -569,6 +570,8 @@ class TelemetryAgent(Agent):
                 self.note = f"observer only, control held by '{b.holder}'. Close other AgOpenWeb tabs or press 'Take control'."
             return
         self.warned_observer = False
+        if getattr(b, "place_seq", 0) != self.place_seq:  # setCoords stopped the vehicle: re-issue the drive command
+            self.place_seq, self.moving_cmd = b.place_seq, None
         want = self.desired()
         if want != self.moving_cmd and not (self.gps_broke and not want):
             self.drive(want, "plan says " + ("work/travel" if want else "standby/broken"))

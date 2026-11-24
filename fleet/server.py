@@ -71,6 +71,19 @@ class Engine:
         self.answers: list[dict] = []
         self._judge_last: dict[str, float] = {}
         self.pending_polish: list[int] = []
+        self._place_twin()
+
+    def _place_twin(self):
+        """Real-farm scenario: put the AgOpenWeb vehicle on the field where its tractor starts work."""
+        b, w = self.bridge, self.copilot.world
+        if not b or not w.geo:
+            return
+        tr = self.copilot.tractors.get(b.tractor)
+        if tr is None:
+            return
+        job = next((t for t in ([tr.cur] if tr.cur else []) + list(tr.queue) if t.kind == "job"), None)
+        cell = tuple(job.target) if job else w.depot
+        b.place(*w.cell_latlon(*cell))
 
     # ------------------------------------------------------------ time
     def tick(self):

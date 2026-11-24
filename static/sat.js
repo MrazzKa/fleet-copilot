@@ -132,16 +132,16 @@ function renderSat() {
   renderSatLive();
 }
 
-// The real AgOpenWeb vehicle: E/N from the bridge, anchored at the lat/lon we sent with sim.setCoords.
+// The real AgOpenWeb vehicle: E/N from the bridge; anchor = [lat, lon, e0, n0], the E/N it reported right after we sent sim.setCoords|lat,lon.
 function renderSatLive() {
   const a = S.agopenweb;
   if (!a || !a.anchor || !a.pose) { if (SATV.live) { SATV.live.remove(); SATV.live = null; } SATV.trail.setLatLngs([]); return; }
-  const ll = enLL(a.pose.e, a.pose.n, a.anchor);
+  const [, , e0, n0] = a.anchor, ll = enLL(a.pose.e - e0, a.pose.n - n0, a.anchor);
   const html = `<div class="livegps ${a.fresh ? "" : "stale"} ${a.gps_fault_active ? "fault" : ""}"><i></i><span>🛰 LIVE GPS · AgOpenWeb · ${a.pose.speed} kph</span></div>`;
   if (!SATV.live) SATV.live = L.marker(ll, { icon: L.divIcon({ className: "", html, iconSize: [16, 16], iconAnchor: [8, 8] }), zIndexOffset: 2000 }).addTo(SATV.map);
   else { SATV.live.setLatLng(ll); if (SATV.liveHtml !== html) SATV.live.setIcon(L.divIcon({ className: "", html, iconSize: [16, 16], iconAnchor: [8, 8] })); }
   SATV.liveHtml = html;
-  SATV.trail.setLatLngs((a.trail || []).slice(-200).map(([e, n]) => enLL(e, n, a.anchor)));
+  SATV.trail.setLatLngs((a.trail || []).slice(-200).map(([e, n]) => enLL(e - e0, n - n0, a.anchor)));
 }
 
 // smooth motion between 10 Hz ticks
