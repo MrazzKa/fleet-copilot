@@ -49,7 +49,12 @@ $("#play").onclick = () => post("/api/control", { action: "toggle" });
 $("#reset").onclick = () => { if (confirm("Reset the day?")) { lastExpId = 0; lastBusId = 0; post("/api/control", { action: "reset" }); } };
 $("#skip").onclick = () => S && post("/api/control", { action: "jump", value: S.now + 30 });
 $$("#speeds button").forEach((b) => b.onclick = () => post("/api/control", { action: "speed", value: +b.dataset.s }));
-$(".agowhead").onclick = () => $("#agow").classList.toggle("open");
+$(".agowhead").onclick = () => {  // satellite view: header only -> buttons -> full details -> header only
+  const b = $("#agow");
+  if (b.classList.contains("mini")) b.classList.remove("mini");
+  else if (VIEW === "sat" && b.classList.contains("open")) { b.classList.remove("open"); b.classList.add("mini"); }
+  else b.classList.toggle("open");
+};
 $("#theme").onclick = () => setTheme(document.body.classList.contains("night") ? "field" : "night");
 $$(".agowbtns [data-ag]").forEach((b) => b.onclick = () => post("/api/agow", { action: b.dataset.ag }).then((r) => { if (!r.ok) toast(r.msg, "err"); else toast("AgOpenWeb <- " + b.textContent.trim()); }));
 $("#tts").onclick = () => { ttsOn = !ttsOn; $("#tts").textContent = ttsOn ? "🔊" : "🔈"; };
@@ -390,6 +395,7 @@ function setView(v) {
   $("#farmlegend").style.display = v === "agow" ? "none" : "";
   $("#showGhost").parentElement.style.display = v === "sat" ? "none" : "";
   if (v === "agow") loadAgowFrame();
+  $("#agow").classList.toggle("mini", v === "sat"); if (v === "sat") $("#agow").classList.remove("open");
   if (v === "sat") { initSat(); setTimeout(() => { if (SATV.map) { SATV.map.invalidateSize(); if (!SATV.fitted) satFit(); } }, 40); }
   try { localStorage.setItem("fleet.view." + SCN, v); } catch (e) { /* ignore */ }
   setTimeout(resize, 30);
