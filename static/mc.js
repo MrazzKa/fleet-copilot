@@ -43,8 +43,8 @@
     const a = S.agopenweb, chip = $("#gpschip");
     if (!a || JUDGE) { chip.classList.add("hidden"); return; }
     chip.classList.remove("hidden");
-    chip.classList.toggle("live", !!a.fresh); chip.classList.toggle("fault", !!a.gps_fault_active);
-    $("#gpschiptxt").textContent = a.gps_fault_active ? "AgOpenWeb · GPS fault" : a.fresh ? `AgOpenWeb LIVE${innerWidth < 1400 ? "" : ` · ${a.has_control ? "control" : "observer"}`}` : a.connected ? "AgOpenWeb · waiting" : "AgOpenWeb · offline";
+    chip.classList.toggle("live", !!(a.fresh && a.has_control)); chip.classList.toggle("observer", !!(a.fresh && !a.has_control)); chip.classList.toggle("fault", !!a.gps_fault_active);
+    $("#gpschiptxt").textContent = a.gps_fault_active ? "AgOpenWeb · GPS fault" : a.fresh ? (a.has_control ? `AgOpenWeb LIVE${innerWidth < 1400 ? "" : " · control"}` : "AgOpenWeb · observer") : a.connected ? "AgOpenWeb · waiting" : "AgOpenWeb · offline";
     const p = a.pose;
     $("#gpsmeta").innerHTML = p ? `${a.tractor} · <b>${p.speed}</b> kph · fix ${a.fix} · ${a.dist_m} m${a.note ? `<br>${esc(a.note)}` : ""}` : "waiting for GPS ticks";
     $("[data-agc=take_control]").style.display = a.has_control ? "none" : "";
