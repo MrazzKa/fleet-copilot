@@ -80,9 +80,9 @@ main{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);gap:10px;
 .story .head b{color:var(--text)}
 .story .sum{display:flex;gap:14px;font-size:12px;margin:0 0 6px;flex-wrap:wrap}
 .story .sum span b{font-variant-numeric:tabular-nums}
-.steps{display:flex;gap:0;align-items:stretch;overflow-x:auto;padding-bottom:4px}
-.step{position:relative;min-width:112px;max-width:150px;flex:1;padding:6px 8px 6px 10px;border-top:3px solid var(--line2);font-size:11.5px}
-.step + .step{margin-left:2px}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px 4px;padding-bottom:4px}
+.step{position:relative;min-width:0;padding:5px 8px 5px 10px;border-top:3px solid var(--line2);font-size:11.5px}
+.step .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .step .n{font-weight:800;font-size:12px}
 .step .t{font-variant-numeric:tabular-nums;color:var(--muted);font-size:11px}
 .step .w{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -234,7 +234,7 @@ body.judge .score{order:5;flex-basis:100%}
   header{gap:10px}
 }
 @media (max-width:1300px){ .brand b{display:none} .quick .lbl{display:none} #tts{display:none} }
-@media (max-height:820px){ .ganttcard{height:176px} .netcard{height:236px} .story .head{display:none} .step{min-width:100px;padding:4px 6px 4px 8px} main{padding:8px 12px;gap:8px} }
+@media (max-height:820px){ .ganttcard{height:176px} .netcard{height:236px} .story .head{display:none} .step{padding:3px 6px 3px 8px;line-height:1.25} .story{padding-top:3px} main{padding:8px 12px;gap:8px} }
 @media (max-width:1050px){ body:not(.judge){overflow:auto;height:auto} main{grid-template-columns:1fr} footer{grid-template-columns:1fr} header{flex-wrap:wrap} .mapcard{min-height:420px} }
 
 /* ---------- AgOpenWeb twin panel ---------- */
