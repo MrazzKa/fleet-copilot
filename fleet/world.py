@@ -117,6 +117,7 @@ class World:
         self.width = sc["grid"]["width"]
         self.height = sc["grid"]["height"]
         self.cell_km = sc["grid"].get("cell_km", 0.5)
+        self.geo: dict | None = sc.get("geo")  # optional real-world anchor, see fleet/geo.py
         self.day_start = hhmm_to_min(sc["day"]["start"])
         self.day_end = hhmm_to_min(sc["day"]["end"])
         d = sc["depot"]
@@ -295,8 +296,20 @@ class World:
             "depot": self.depot,
             "water": sorted(self.water),
             "bridges": list(self.bridges.values()),
-            "fields": [{"id": f.id, "name": f.name, "x": f.x, "y": f.y, "w": f.w, "h": f.h, "area_ha": f.area_ha} for f in self.fields.values()],
+            "fields": [{"id": f.id, "name": f.name, "x": f.x, "y": f.y, "w": f.w, "h": f.h, "area_ha": f.area_ha,
+                        **({"polygon": raw["polygon"], "source": raw.get("source"), "osm_id": raw.get("osm_id")} if "polygon" in raw else {})}
+                       for f, raw in zip(self.fields.values(), self.raw["fields"])],
+            "geo": self.geo,
+            "river_name": (self.raw.get("river") or {}).get("name"),
+            "depot_name": self.raw["depot"].get("name"),
         }
+
+    def cell_latlon(self, x: float, y: float) -> tuple[float, float] | None:
+        if not self.geo:
+            return None
+        from .geo import cell_to_ll
+        lat, lon = cell_to_ll(x, y, self.geo, self.height)
+        return round(lat, 7), round(lon, 7)
 
 
 def load_scenario(path: str | Path) -> dict:

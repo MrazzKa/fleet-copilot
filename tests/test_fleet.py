@@ -215,3 +215,20 @@ def test_gps_stall_detected_from_telemetry_and_recovers():
         assert run(9, lambda: not sim.tractors["T1"].broken), "no recovery after resume"
     finally:
         p.terminate()
+
+
+def test_maricopa_real_farm_day_has_no_violations():
+    from fleet import geo
+    sc = load_scenario(Path(__file__).resolve().parent.parent / "scenarios" / "maricopa.json")
+    assert sc["geo"]["origin"] and all(f.get("polygon") for f in sc["fields"])
+    ev = [(hhmm_to_min(t), e) for t, e in DEMO_EVENTS]
+    for events in ([], ev):
+        c = run_one(sc, events, "copilot")
+        assert c["violations"] == 0
+        assert c["high_on_time"] >= 3 and c["done"] >= 9  # the 3 scripted high-priority jobs stay on time
+    # geo round trip: a field's entry cell maps back into that real polygon
+    sim = Simulation(sc)
+    f = sim.world.fields["F6"]
+    lat, lon = sim.world.cell_latlon(*f.entry)
+    assert geo.point_in_ring(lat, lon, sc["fields"][5]["polygon"])
+    assert geo.ll_to_cell(lat, lon, sc["geo"], sim.world.height) == f.entry

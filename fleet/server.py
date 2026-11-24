@@ -27,7 +27,15 @@ from .world import hhmm_to_min, load_scenario, min_to_hhmm
 ROOT = Path(__file__).resolve().parent.parent
 STATIC = ROOT / "static"
 REPORTS = ROOT / "reports"
-SCENARIO = Path(os.getenv("FLEET_SCENARIO", ROOT / "scenarios" / "demo.json"))
+
+
+def scenario_path(v: str | None) -> Path:
+    """FLEET_SCENARIO: a name in scenarios/ (demo, maricopa) or a path to a JSON file. Default: demo."""
+    v = (v or "demo").strip()
+    return Path(v) if ("/" in v or v.endswith(".json")) else ROOT / "scenarios" / f"{v}.json"
+
+
+SCENARIO = scenario_path(os.getenv("FLEET_SCENARIO"))
 TICK_S = 0.1
 MEMORY = ROOT / "memory" / "shared_memory.json"
 
@@ -134,6 +142,9 @@ class Engine:
             d = {"id": tr.id, "name": tr.spec.name, "model": tr.spec.model, "x": x, "y": y, "status": tr.status(),
                  "fuel": round(tr.fuel, 1), "implement": tr.implement, "caps": tr.spec.capabilities, "cur": cur,
                  "hours": tr.spec.hours_since_service, "wait_until": tr.wait_until if tr.phase == "wait" else None}
+            ll = sim.world.cell_latlon(x, y)
+            if ll:
+                d["lat"], d["lon"] = ll
             if not lite:
                 d["path"] = ahead
                 d["queue"] = [t.to_json() for t in tr.queue]
@@ -414,7 +425,7 @@ async def api_stories(n: int = 8):
 async def api_info():
     port = os.getenv("PORT", "8000")
     return {"public_url": os.getenv("PUBLIC_URL"), "lan_url": f"http://{lan_ip()}:{port}", "llm": llm.status(),
-            "scenario": ENGINE.copilot.world.name,
+            "scenario": ENGINE.copilot.world.name, "scenario_id": SCENARIO.stem, "geo": ENGINE.copilot.world.geo,
             "agopenweb_view": os.getenv("FLEET_AGOPENWEB_VIEW") or ("http://localhost:5174" if ENGINE.bridge else None)}
 
 
