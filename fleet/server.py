@@ -145,6 +145,13 @@ class Engine:
             ll = sim.world.cell_latlon(x, y)
             if ll:
                 d["lat"], d["lon"] = ll
+                # planned route on the real map: rest of the current leg, then A* legs to the next 3 queued tasks
+                route, at = [list(c) for c in ahead], (tr.path[-1] if ahead else tr.pos)
+                for task in tr.queue[:3]:
+                    leg = sim.world.path(tuple(at), tuple(task.target)) or []
+                    route += [list(c) for c in leg[1:]]
+                    at = task.target
+                d["route"] = route
             if not lite:
                 d["path"] = ahead
                 d["queue"] = [t.to_json() for t in tr.queue]

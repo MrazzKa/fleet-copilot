@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Fleet Copilot | agents that keep a tractor fleet working</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -30,10 +31,11 @@
 <main>
   <section class="left">
     <div class="card mapcard">
-      <div class="cardhead"><div class="viewsw" id="viewsw"><button data-view="agow" class="on">AgOpenWeb (live GPS)</button><button data-view="farm">Farm map</button></div><div class="maplegend" id="farmlegend">
+      <div class="cardhead"><div class="viewsw" id="viewsw"><button data-view="sat" style="display:none">🛰 Satellite</button><button data-view="agow" class="on">AgOpenWeb (live GPS)</button><button data-view="farm">Farm map</button></div><div class="maplegend" id="farmlegend">
         <span><i class="sw spray"></i>spray</span><span><i class="sw mow"></i>mow</span><span><i class="sw till"></i>till</span><span><i class="sw seed"></i>seed</span>
         <label><input type="checkbox" id="showGhost" checked> FCFS ghost</label><label><input type="checkbox" id="showPaths" checked> routes</label></div></div>
       <canvas id="map"></canvas>
+      <div id="sat" class="hidden"></div>
       <div id="agowview" class="agowview hidden">
         <iframe id="agowframe" title="AgOpenWeb" referrerpolicy="no-referrer"></iframe>
         <div class="agowfallback" id="agowfallback">AgOpenWeb is not connected. Start it (see README) or switch to <b>Farm map</b>.</div>
@@ -100,6 +102,8 @@
 
 <div id="toasts"></div>
 <div id="modal" class="modal hidden"><div class="box"><button class="x" id="modalx">✕</button><div id="modalbody"></div></div></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="/static/app.js"></script>
+<script src="/static/sat.js"></script>
 </body>
 </html>

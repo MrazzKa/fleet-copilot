@@ -153,6 +153,7 @@ function onState() {
   const busy = (S.agents || []).filter((a) => a.busy);
   $("#thinking").style.display = busy.length ? "block" : "none";
   if (busy.length) $("#thinking").textContent = `🧠 ${busy.map((a) => a.title).join(" & ")} deliberating with ${busy[0].engine}, tractors keep working on the safe ⚡ reflex plan`;
+  if (VIEW === "sat" && typeof renderSat === "function") renderSat();
   if (domTick % 2 === 0) { renderOrchMetrics(); if (!JUDGE) renderFeed(); }
   if (domTick++ % 3 === 0) { renderTractors(); renderResil(); if (!JUDGE) { renderJobs(); renderLog(); } }
 }
@@ -379,15 +380,18 @@ window.addEventListener("resize", resize);
 new ResizeObserver(resize).observe(map); new ResizeObserver(resize).observe(net); new ResizeObserver(resize).observe(gantt);
 
 // ------------------------------------------------------------------ main view: AgOpenWeb or farm map
-let VIEW = null, agowUrl = null;
+let VIEW = null, agowUrl = null, SCN = "demo", INFO = null;
 function setView(v) {
   VIEW = v;
   $$("#viewsw button").forEach((b) => b.classList.toggle("on", b.dataset.view === v));
   $("#agowview").classList.toggle("hidden", v !== "agow");
-  map.classList.toggle("hidden", v === "agow");
+  map.classList.toggle("hidden", v !== "farm");
+  $("#sat").classList.toggle("hidden", v !== "sat");
   $("#farmlegend").style.display = v === "agow" ? "none" : "";
+  $("#showGhost").parentElement.style.display = v === "sat" ? "none" : "";
   if (v === "agow") loadAgowFrame();
-  try { localStorage.setItem("fleet.view", v); } catch (e) { /* ignore */ }
+  if (v === "sat") { initSat(); setTimeout(() => { if (SATV.map) { SATV.map.invalidateSize(); if (!SATV.fitted) satFit(); } }, 40); }
+  try { localStorage.setItem("fleet.view." + SCN, v); } catch (e) { /* ignore */ }
   setTimeout(resize, 30);
 }
 $$("#viewsw button").forEach((b) => b.onclick = () => setView(b.dataset.view));
@@ -403,8 +407,13 @@ fetch("/api/info").then((r) => r.json()).then((info) => {
   const local = ["localhost", "127.0.0.1"].includes(location.hostname);
   agowUrl = info.agopenweb_view ? info.agopenweb_view.replace("localhost", local ? "localhost" : location.hostname) : null;
   if (agowUrl) $("#agowopen").href = agowUrl;
-  let saved = null; try { saved = localStorage.getItem("fleet.view"); } catch (e) { /* ignore */ }
-  setView(agowUrl && local && !JUDGE ? (saved || "agow") : "farm");
+  INFO = info; SCN = info.scenario_id || "demo";
+  const sat = !!(info.geo && window.L);  // real-farm scenario and Leaflet loaded (needs internet)
+  if (sat) $("#viewsw [data-view=sat]").style.display = "";
+  let saved = null; try { saved = localStorage.getItem("fleet.view." + SCN); } catch (e) { /* ignore */ }
+  if ((saved === "sat" && !sat) || (saved === "agow" && !(agowUrl && local))) saved = null;
+  const whenReady = (fn) => (W ? fn() : setTimeout(() => whenReady(fn), 100));  // the satellite view needs the static world first
+  whenReady(() => setView(saved || (sat ? "sat" : agowUrl && local && !JUDGE ? "agow" : "farm")));
   if (!agowUrl) $("#viewsw [data-view=agow]").style.display = "none";
 }).catch(() => setView("farm"));
 
@@ -572,5 +581,5 @@ function renderAgow() {
   if (p) { c.fillStyle = a.gps_fault_active ? T.red : "#0f766e"; c.beginPath(); c.arc(X(p.e), Y(p.n), 5, 0, Math.PI * 2); c.fill(); }
   c.fillStyle = T.muted; c.font = "600 9px Inter"; c.fillText(`${Math.round(span)} m`, 6, r.height - 6);
 }
-function frame(t) { if (VIEW !== "agow") drawMap(t); if (BOTTOM === "gantt") drawGantt(); if (S) { drawNet(t); if (Math.floor(t / 250) !== frame.k) { frame.k = Math.floor(t / 250); renderAgow(); } } requestAnimationFrame(frame); }
+function frame(t) { if (VIEW === "farm") drawMap(t); if (BOTTOM === "gantt") drawGantt(); if (S) { drawNet(t); if (Math.floor(t / 250) !== frame.k) { frame.k = Math.floor(t / 250); renderAgow(); } } requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
