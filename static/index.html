@@ -77,6 +77,7 @@
         <button data-tab="jobs">Jobs</button>
         <button data-tab="memory">Memory</button>
         <button data-tab="log">Log</button>
+        <button data-tab="integ">Integrations</button>
         <span class="tabsep" title="Engineering views"></span>
         <button data-tab="tests">Test cases</button>
         <button data-tab="proof">Proof</button>
@@ -94,6 +95,38 @@
           <button id="saveRun">💾 Save run to reports/</button><label><input type="checkbox" id="logAll"> routine entries</label></div>
         <div id="log"></div>
       </div>
+      <div class="tab" id="tab-integ"><div class="integ">
+        <h3>Connecting a real fleet</h3>
+        <p>Fleet Copilot needs three kinds of data. <b>Connected today:</b> field boundaries from GeoJSON (this farm, from OpenStreetMap) and one live vehicle through the AgOpenWeb adapter (WebSocket). Tractors T2 and T3, jobs and wind are simulated. The inputs below are the format an adapter for real machines would provide.</p>
+        <div class="ig"><div class="ih"><b>1. Fields</b><span>GeoJSON, one Polygon per field</span></div>
+<pre>{"type": "Feature",
+ "properties": {"id": "F7", "name": "North Strip C"},
+ "geometry": {"type": "Polygon",
+   "coordinates": [[[-111.9827, 33.0802], [-111.9789, 33.0802],
+                    [-111.9789, 33.0877], [-111.9827, 33.0877], [-111.9827, 33.0802]]]}}</pre></div>
+        <div class="ig"><div class="ih"><b>2. Tractors, implements and jobs</b><span>CSV or JSON</span></div>
+<pre>id,name,model,capabilities,implement,fuel_pct,km_h
+T1,Atlas,ATC 7R heavy,tiller|seeder|sprayer|mower,tiller,90,15
+
+job,type,field,priority,deadline
+J5,spray,F7,high,10:30</pre></div>
+        <div class="ig"><div class="ih"><b>3. Live telemetry, per tractor</b><span>about 1 to 10 messages per second</span></div>
+<pre>{"tractor": "T1", "lat": 33.08341, "lon": -111.98010,
+ "speed_kph": 8.0, "heading_deg": 12.5, "status": "working",
+ "timestamp": "2026-11-23T14:05:12Z"}</pre>
+        <p class="note">Today this comes from AgOpenWeb (E/N position, heading, speed, fix) through <code>fleet/integrations/agopenweb.py</code>. A REST or MQTT telemetry endpoint for other machines is not built yet.</p></div>
+        <div class="ig"><div class="ih"><b>Existing API</b><span>this server</span></div>
+        <table class="apit">
+          <tr><td><code>WS /ws</code></td><td>Live state: tractors with lat/lon, jobs, agents, incidents (10 per second)</td></tr>
+          <tr><td><code>POST /api/event</code></td><td>Report an event: breakdown, repair, block / unblock a crossing, wind, priority, add_job</td></tr>
+          <tr><td><code>POST /api/command</code></td><td>Plain-English command to the Operator Liaison agent</td></tr>
+          <tr><td><code>GET /api/stories</code></td><td>Incident timelines: detected, planned, safety check, sent, recovered</td></tr>
+          <tr><td><code>GET /api/why?job=J5</code></td><td>Why a job is planned the way it is</td></tr>
+          <tr><td><code>GET /api/info</code></td><td>Scenario, geo anchor, LLM chain</td></tr>
+          <tr><td><code>GET /api/log.json</code></td><td>Full run log for audit (also <code>/api/log.csv</code>)</td></tr>
+          <tr><td><code>GET /health</code></td><td>Status for monitoring</td></tr>
+        </table></div>
+      </div></div>
       <div class="tab" id="tab-proof"><div id="proof">Loading…</div></div>
     </div>
 </div>
