@@ -181,3 +181,5 @@ body.mc.judge{overflow:hidden;height:100vh}
 .mc .score{flex:0 1 auto}
 .mc .hright{margin-left:auto}
 .mc header button,.mc .scoreboard .who,.mc .pill{white-space:nowrap}
+.mc .gpsmenu{position:fixed;top:68px;right:auto}
+.gpsmenu button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#e8efe9;border-radius:8px;padding:6px 10px}.gpsmenu button:hover{background:rgba(255,255,255,.12)}

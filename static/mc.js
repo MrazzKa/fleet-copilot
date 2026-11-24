@@ -29,8 +29,12 @@
   addEventListener("resize", fitFooter);
 
   // ---------------------------------------------------------------- GPS chip (replaces the floating GPS twin box)
-  $("#gpschipbtn").onclick = (e) => { e.stopPropagation(); $("#gpsmenu").classList.toggle("hidden"); };
-  document.addEventListener("click", (e) => { if (!$("#gpschip").contains(e.target)) $("#gpsmenu").classList.add("hidden"); });
+  $("#gpschipbtn").onclick = (e) => {
+    e.stopPropagation(); const m = $("#gpsmenu"), r = $("#gpschipbtn").getBoundingClientRect();
+    m.style.left = `${Math.max(8, Math.min(r.left, innerWidth - 240))}px`; m.classList.toggle("hidden");
+  };
+  document.body.appendChild($("#gpsmenu"));  // outside the top bar, which clips its children
+  document.addEventListener("click", (e) => { if (!$("#gpschip").contains(e.target) && !$("#gpsmenu").contains(e.target)) $("#gpsmenu").classList.add("hidden"); });
   $$("[data-agc]").forEach((b) => b.onclick = () => post("/api/agow", { action: b.dataset.agc }).then((r) => { if (!r.ok) toast(r.msg, "err"); else toast("AgOpenWeb <- " + b.textContent.trim()); $("#gpsmenu").classList.add("hidden"); }));
   function renderChip() {
     const a = S.agopenweb, chip = $("#gpschip");
