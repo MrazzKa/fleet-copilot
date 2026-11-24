@@ -39,7 +39,9 @@ function initSat() {
 function satFit() {
   if (!SATV.map) return;
   const pts = W.fields.filter((f) => f.polygon).flatMap((f) => f.polygon); pts.push(gridLL(W.depot[0], W.depot[1]));
-  SATV.map.invalidateSize(); SATV.map.fitBounds(L.latLngBounds(pts), { padding: [18, 18] }); SATV.fitted = true;
+  SATV.map.invalidateSize();
+  const mc = document.body.classList.contains("mc") && !JUDGE, side = (id) => { const e = document.getElementById(id); return e ? e.getBoundingClientRect().width : 0; };
+  SATV.map.fitBounds(L.latLngBounds(pts), mc ? { paddingTopLeft: [side("fleet") + 30, 70], paddingBottomRight: [side("alerts") + 30, 112] } : { padding: [18, 18] }); SATV.fitted = true;
 }
 
 // Field geometry in local meters: pivots get concentric passes, strips get N-S AB lines (serpentine).

@@ -7,8 +7,9 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/mc.css">
 </head>
-<body>
+<body class="mc">
 <header>
   <div class="brand"><span class="mark">🌾</span><div><b>Fleet&nbsp;Copilot</b><small id="scn">connecting…</small></div></div>
   <div class="clockbox"><div id="clock">06:00</div><div class="dayprog"><i id="dayfill"></i></div></div>
@@ -20,6 +21,8 @@
   </div>
   <div class="score" id="score"></div>
   <div class="hright">
+    <div id="gpschip" class="gpschip hidden"><button id="gpschipbtn" class="chipbtn"><i class="dot"></i><span id="gpschiptxt">AgOpenWeb</span><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 4l3 3 3-3" stroke="currentColor" fill="none" stroke-width="1.6"/></svg></button>
+      <div id="gpsmenu" class="gpsmenu hidden"><div id="gpsmeta" class="gpsmeta"></div><button data-agc="gps_fault" class="danger">GPS fault</button><button data-agc="resume">Resume</button><button data-agc="take_control">Take control</button></div></div>
     <span id="wind" class="pill"></span>
     <span id="llm" class="pill clickable" title="Agent LLM chain, click to simulate 'no signal in the field' (fails over to local model / rules)"></span>
     <button id="theme" class="icon" title="Switch theme: Field ↔ Night ops">◐</button>
@@ -28,8 +31,7 @@
   </div>
 </header>
 
-<main>
-  <section class="left">
+<div id="stage">
     <div class="card mapcard">
       <div class="cardhead"><div class="viewsw" id="viewsw"><button data-view="sat" style="display:none">🛰 Satellite</button><button data-view="agow" class="on">AgOpenWeb (live GPS)</button><button data-view="farm">Farm map</button></div><div class="maplegend" id="farmlegend">
         <span><i class="sw spray"></i>spray</span><span><i class="sw mow"></i>mow</span><span><i class="sw till"></i>till</span><span><i class="sw seed"></i>seed</span>
@@ -49,14 +51,20 @@
         <div class="agowbtns"><button data-ag="gps_fault" title="Really stop the vehicle inside AgOpenWeb, agents must notice from GPS">⚡ GPS fault</button><button data-ag="resume">▶ Resume</button><button data-ag="toggle_sim" title="sim.toggleEnable">Sim on/off</button><button data-ag="take_control">Take control</button></div>
       </div>
     </div>
+</div>
+
+<aside id="fleet" class="mcpanel"><div class="ph" data-collapse="fleet"><svg width="14" height="14" viewBox="0 0 14 14"><rect x="1" y="5" width="8" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="4" cy="11" r="2" fill="currentColor"/><circle cx="11" cy="10.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6 5V2h3l2 3" fill="none" stroke="currentColor" stroke-width="1.4"/></svg><b>Fleet</b><span id="fleetsum" class="psub"></span></div><div id="fleetlist" class="pbody"></div></aside>
+<aside id="alerts" class="mcpanel"><div class="ph" data-collapse="alerts"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1.5l6 11H1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 6v3" stroke="currentColor" stroke-width="1.5"/><circle cx="7" cy="10.8" r=".8" fill="currentColor"/></svg><b>Alerts</b><span id="alertsum" class="psub"></span></div><div id="alertlist" class="pbody"></div></aside>
+<div id="agentbar" class="mcbar"><div id="agentdots" class="agentdots"></div><div id="keym" class="keym"></div><button id="detailsbtn" class="mcbtn">Details</button></div>
+
+<div id="drawer" class="drawer">
+  <div class="drawerhead"><b>Details</b><span class="psub">agent conversation, network, plan, tests, logs</span><button id="drawerx" class="mcbtn">Close</button></div>
     <div class="card ganttcard">
       <div class="bottomsw"><button data-bottom="story" class="on">Incident story</button><button data-bottom="gantt">Schedule</button><select id="storypick" title="Pick an incident"></select></div>
       <div id="story" class="story"></div>
       <canvas id="gantt" class="hidden"></canvas>
     </div>
-  </section>
 
-  <section class="right">
     <div class="card netcard">
       <div class="cardhead"><h2>Agent network</h2><span class="sub">live messages · tool calls · memory</span></div>
       <canvas id="net"></canvas>
@@ -87,10 +95,9 @@
       </div>
       <div class="tab" id="tab-proof"><div id="proof">Loading…</div></div>
     </div>
-  </section>
-</main>
+</div>
 
-<footer>
+<footer><button type="button" id="cmdfold" class="mcbtn" title="Show or hide the fault buttons">Faults</button>
   <form id="cmd" autocomplete="off">
     <button type="button" id="mic" title="Talk to the Operator Liaison agent (English)">🎤</button>
     <input id="cmdtext" placeholder='Talk to the fleet… “Bison is making a noise and stopped” · “close the north bridge” · “why not T3 for J5”'>
@@ -105,5 +112,6 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="/static/app.js"></script>
 <script src="/static/sat.js"></script>
+<script src="/static/mc.js"></script>
 </body>
 </html>
